@@ -1,6 +1,7 @@
-pymupdf
 streamlit
 chromadb
 sentence-transformers
+pymupdf
 langchain
-ollama
+langchain-text-splitters
+torch

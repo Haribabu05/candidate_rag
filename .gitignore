@@ -1,1 +1,51 @@
-data/
+# Virtual Environment
+venv/
+.env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ChromaDB vector database
+chroma_db/
+
+# Extracted intermediate files
+extracted_pages.json
+full_affidavit.txt
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# HuggingFace cache
+.cache/
+huggingface/
+
+# Torch cache
+torch_cache/
+
+# Temporary files
+temp/
+tmp/
+
+# Build artifacts
+dist/
+build/
+
+# Docker
+*.tar
