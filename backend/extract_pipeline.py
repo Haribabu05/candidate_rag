@@ -1,47 +1,109 @@
-import fitz
+import os
 import json
-from pathlib import Path
+import pytesseract
+
+pytesseract.pytesseract.tesseract_cmd = (
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+)
+
+from pdf2image import convert_from_path
+
+# ======================================
+# CONFIG
+# ======================================
+
+PDF_FOLDER = r"data\KOLATHUR"
+
+OUTPUT_FILE = "extracted_pages.json"
+
+POPPLER_PATH = r"C:\poppler\Library\bin"
+
+# ======================================
+# STORAGE
+# ======================================
 
 all_pages = []
 
-data_path = Path("data")
+# ======================================
+# PROCESS PDFs
+# ======================================
 
-for constituency_folder in data_path.iterdir():
+for filename in os.listdir(PDF_FOLDER):
 
-    if not constituency_folder.is_dir():
+    if not filename.endswith(".pdf"):
         continue
 
-    constituency = constituency_folder.name
+    pdf_path = os.path.join(
+        PDF_FOLDER,
+        filename
+    )
 
-    for pdf_file in constituency_folder.glob("*.pdf"):
+    print(f"Processing {filename}")
 
-        parts = pdf_file.stem.split("-")
+    try:
 
-        candidate = parts[0]
-        party = parts[1] if len(parts) > 1 else "UNKNOWN"
+        images = convert_from_path(
+            pdf_path,
+            dpi=300,
+            poppler_path=POPPLER_PATH
+        )
 
-        doc = fitz.open(pdf_file)
+        for page_num, image in enumerate(images):
 
-        for i, page in enumerate(doc):
+            text = pytesseract.image_to_string(
+                image,
+                lang="eng"
+            )
 
-            text = page.get_text().strip()
+            page_data = {
 
-            if text:
+                "text": text,
 
-                all_pages.append({
-                    "text": text,
-                    "metadata": {
-                        "candidate": candidate,
-                        "party": party,
-                        "constituency": constituency,
-                        "page": i + 1,
-                        "source": str(pdf_file)
-                    }
-                })
+                "metadata": {
 
-        print(f"✓ {pdf_file.name}")
+                    "source_file": filename,
 
-with open("extracted_pages.json", "w", encoding="utf-8") as f:
-    json.dump(all_pages, f, ensure_ascii=False, indent=2)
+                    "page": page_num + 1,
 
-print(f"\nStored {len(all_pages)} pages")
+                    "candidate": (
+                        filename.split("-")[0]
+                    ),
+
+                    "party": (
+                        filename.split("-")[1]
+                    ),
+
+                    "constituency": "KOLATHUR"
+                }
+            }
+
+            all_pages.append(page_data)
+
+        print(f"✓ {filename}")
+
+    except Exception as e:
+
+        print(
+            f"Failed {filename}: {e}"
+        )
+
+# ======================================
+# SAVE
+# ======================================
+
+with open(
+    OUTPUT_FILE,
+    "w",
+    encoding="utf-8"
+) as f:
+
+    json.dump(
+        all_pages,
+        f,
+        ensure_ascii=False,
+        indent=2
+    )
+
+print(
+    f"\nStored {len(all_pages)} pages"
+)
