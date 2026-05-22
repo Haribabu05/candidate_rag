@@ -13,3 +13,6 @@ COPY data/ ./data
 EXPOSE 8501
 
 CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0"]
+
+#aldkj;aldkf
+#idsjalsjkdl

@@ -1,45 +1,67 @@
+import re
+import json
 import streamlit as st
 import chromadb
 
 from sentence_transformers import SentenceTransformer
-from openai import OpenAI
+from groq import Groq
 
 # ==========================================
 # PAGE CONFIG
 # ==========================================
+
 st.set_page_config(
-    page_title="Election Affidavit Intelligence System",
+    page_title="Election Affidavit RAG",
     layout="wide"
 )
 
-# ==========================================
-# TITLE
-# ==========================================
-st.title("🗳️ Election Affidavit Intelligence System")
+st.title(
+    "🗳️ Election Affidavit Intelligence System"
+)
 
-st.markdown("""
+st.markdown(
+    """
 RAG system for Tamil Nadu election affidavits using:
 
 - SentenceTransformers
 - ChromaDB
 - Groq LLM Generation
-""")
+"""
+)
 
 # ==========================================
-# LOAD EMBEDDING MODEL
+# LOAD STRUCTURED DATA
 # ==========================================
+
+with open(
+    "candidate_master_data.json",
+    "r",
+    encoding="utf-8"
+) as f:
+
+    candidate_master_data = json.load(f)
+
+candidate_names = list(
+    candidate_master_data.keys()
+)
+
+# ==========================================
+# EMBEDDING MODEL
+# ==========================================
+
 @st.cache_resource
-def load_model():
+def load_embedding_model():
 
     return SentenceTransformer(
         "sentence-transformers/all-MiniLM-L6-v2"
     )
 
-model = load_model()
+model = load_embedding_model()
 
 # ==========================================
-# LOAD CHROMADB
+# CHROMADB
 # ==========================================
+
 @st.cache_resource
 def load_collection():
 
@@ -47,388 +69,342 @@ def load_collection():
         path="chroma_db"
     )
 
-    return client.get_collection(
+    collection = client.get_collection(
         "candidate_affidavits"
     )
+
+    return collection
 
 collection = load_collection()
 
 # ==========================================
 # GROQ CLIENT
 # ==========================================
-groq_client = OpenAI(
-    api_key=st.secrets["GROQ_API_KEY"],
-    base_url="https://api.groq.com/openai/v1"
+
+groq_client = Groq(
+    api_key="YOUR_GROQ_API_KEY"
 )
 
 # ==========================================
-# USER INPUT
+# USER QUERY
 # ==========================================
+
 query = st.text_input(
-    "Ask a question",
-    placeholder="Who is MK Stalin?"
+    "Ask a question"
 )
 
 # ==========================================
-# MAIN PIPELINE
+# QUERY EXECUTION
 # ==========================================
+
 if query:
 
-    # ======================================
-    # NORMALIZED QUERY
-    # ======================================
     normalized_query = (
         query.lower()
         .replace(" ", "")
     )
 
-    query_lower = query.lower()
-
-    matched_docs = []
+    matched_candidate = None
 
     # ======================================
-    # LOAD ALL DOCUMENTS
+    # EXACT CANDIDATE MATCH
     # ======================================
-    all_docs = collection.get()
 
-    # ======================================
-    # DETECT QUERY TYPE
-    # ======================================
-    query_type = "general"
-
-    if "income" in query_lower:
-
-        query_type = "income"
-
-    elif "asset" in query_lower:
-
-        query_type = "asset"
-
-    elif "criminal" in query_lower:
-
-        query_type = "criminal"
-
-    elif "party" in query_lower:
-
-        query_type = "party"
-
-    elif "pan" in query_lower:
-
-        query_type = "pan"
-
-    elif "compare" in query_lower:
-
-        query_type = "compare"
-
-    # ======================================
-    # CANDIDATE MATCHING
-    # ======================================
-    candidate_matches = []
-
-    for doc, meta in zip(
-        all_docs["documents"],
-        all_docs["metadatas"]
-    ):
-
-        candidate = meta.get(
-            "candidate",
-            ""
-        )
+    for candidate in candidate_names:
 
         normalized_candidate = (
             candidate.lower()
             .replace(" ", "")
         )
 
-        # exact + partial matching
         if (
-            normalized_candidate in normalized_query
-            or normalized_query in normalized_candidate
+            normalized_candidate
+            in normalized_query
         ):
 
-            candidate_matches.append(
-                (doc, meta)
-            )
+            matched_candidate = candidate
+            break
 
     # ======================================
-    # FILTER RELEVANT CHUNKS
+    # EMBEDDING SEARCH
     # ======================================
-    if len(candidate_matches) > 0:
 
-        filtered = []
+    query_embedding = model.encode(
+        query
+    ).tolist()
 
-        for doc, meta in candidate_matches:
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=10
+    )
 
-            text_lower = doc.lower()
+    documents = results["documents"][0]
+    metadatas = results["metadatas"][0]
 
-            # income
+    retrieved_docs = list(
+        zip(documents, metadatas)
+    )
+
+    # ======================================
+    # FILTER BY CANDIDATE
+    # ======================================
+
+    if matched_candidate:
+
+        filtered_docs = []
+
+        for doc, meta in retrieved_docs:
+
             if (
-                query_type == "income"
-                and "income" in text_lower
+                meta["candidate"]
+                == matched_candidate
             ):
 
-                filtered.append((doc, meta))
-
-            # assets
-            elif (
-                query_type == "asset"
-                and (
-                    "asset" in text_lower
-                    or "liabilit" in text_lower
+                filtered_docs.append(
+                    (doc, meta)
                 )
-            ):
-
-                filtered.append((doc, meta))
-
-            # criminal
-            elif (
-                query_type == "criminal"
-                and "criminal" in text_lower
-            ):
-
-                filtered.append((doc, meta))
-
-            # party
-            elif (
-                query_type == "party"
-                and "party" in text_lower
-            ):
-
-                filtered.append((doc, meta))
-
-            # PAN
-            elif (
-                query_type == "pan"
-                and "pan" in text_lower
-            ):
-
-                filtered.append((doc, meta))
-
-            # compare
-            elif query_type == "compare":
-
-                filtered.append((doc, meta))
-
-            # general
-            elif query_type == "general":
-
-                filtered.append((doc, meta))
-
-        if len(filtered) > 0:
-
-            matched_docs = filtered
-
-        else:
-
-            matched_docs = candidate_matches
-
-    # ======================================
-    # VECTOR SEARCH FALLBACK
-    # ======================================
-    if len(matched_docs) == 0:
-
-        query_embedding = model.encode(
-            query
-        ).tolist()
-
-        results = collection.query(
-            query_embeddings=[query_embedding],
-            n_results=5
-        )
-
-        documents = results["documents"][0]
-
-        metadatas = results["metadatas"][0]
-
-        matched_docs = list(
-            zip(documents, metadatas)
-        )
-
-    # ======================================
-    # NO RESULTS
-    # ======================================
-    if len(matched_docs) == 0:
-
-        st.warning(
-            "No matching affidavit information found."
-        )
 
     else:
 
-        # ==================================
-        # BUILD CONTEXT
-        # ==================================
-        context = ""
+        filtered_docs = retrieved_docs
 
-        shown_pages = set()
+    # ======================================
+    # BUILD CONTEXT
+    # ======================================
 
-        for doc, meta in matched_docs:
+    context = "\n\n".join(
 
-            page = meta.get(
-                "page",
-                "Unknown"
-            )
+        [
 
-            # skip duplicate pages
-            if page in shown_pages:
-                continue
+            f"""
+Candidate:
+{meta.get('candidate', 'Unknown')}
 
-            shown_pages.add(page)
+Party:
+{meta.get('party', 'Unknown')}
 
-            candidate = meta.get(
-                "candidate",
-                "Unknown"
-            )
+Constituency:
+{meta.get('constituency', 'Unknown')}
 
-            party = meta.get(
-                "party",
-                "Unknown"
-            )
+Page:
+{meta.get('page', 'Unknown')}
 
-            constituency = meta.get(
-                "constituency",
-                "Unknown"
-            )
-
-            context += f"""
-Candidate: {candidate}
-Party: {party}
-Constituency: {constituency}
-Page: {page}
-
-Affidavit Content:
+Content:
 {doc}
-
-=========================================
 """
 
-            if len(shown_pages) >= 5:
-                break
+            for doc, meta in filtered_docs
 
-        # ==================================
-        # PROMPT
-        # ==================================
+        ]
+    )
+
+    # ======================================
+    # SPECIAL FIELD EXTRACTION
+    # ======================================
+
+    lower_query = query.lower()
+
+    # ======================================
+    # PAN EXTRACTION
+    # ======================================
+
+    if "pan" in lower_query:
+
+        pan_pattern = (
+            r"[A-Z]{5}[0-9]{4}[A-Z]"
+        )
+
+        pans = re.findall(
+            pan_pattern,
+            context
+        )
+
+        if pans:
+
+            st.subheader("Answer")
+
+            st.success(
+                f"""
+Candidate:
+{matched_candidate}
+
+PAN ID:
+{pans[0]}
+"""
+            )
+
+        else:
+
+            st.warning(
+                "PAN ID not found."
+            )
+
+    # ======================================
+    # INCOME EXTRACTION
+    # ======================================
+
+    elif "income" in lower_query:
+
+        income_pattern = (
+            r"₹?\s?[\d,]+"
+        )
+
+        incomes = re.findall(
+            income_pattern,
+            context
+        )
+
+        st.subheader("Answer")
+
+        if incomes:
+
+            unique_incomes = list(
+                set(incomes)
+            )
+
+            st.success(
+                f"""
+Candidate:
+{matched_candidate}
+
+Possible Income Values:
+{", ".join(unique_incomes[:10])}
+"""
+            )
+
+        else:
+
+            st.warning(
+                "Income details not found."
+            )
+
+    # ======================================
+    # PARTY QUERY
+    # ======================================
+
+    elif "party" in lower_query:
+
+        if (
+            matched_candidate
+            and matched_candidate
+            in candidate_master_data
+        ):
+
+            party = (
+                candidate_master_data[
+                    matched_candidate
+                ]["party"]
+            )
+
+            st.subheader("Answer")
+
+            st.success(
+                f"""
+{matched_candidate}
+belongs to
+{party}
+party.
+"""
+            )
+
+        else:
+
+            st.warning(
+                "Party information not found."
+            )
+
+    # ======================================
+    # GENERAL RAG GENERATION
+    # ======================================
+
+    else:
+
         prompt = f"""
-You are an AI assistant analyzing
-Tamil Nadu election affidavits.
+You are an election affidavit analyst.
 
-Answer ONLY using the provided affidavit context.
+Answer ONLY from the provided context.
 
-Rules:
-- Be concise
-- Be factual
-- Do not hallucinate
-- If answer is unavailable say:
-  "Information not found in affidavit."
+If information is unavailable,
+say:
+'Information not found in affidavit.'
 
-AFFIDAVIT CONTEXT:
+Context:
 {context}
 
-QUESTION:
+Question:
 {query}
+
+Answer clearly.
 """
 
-        # ==================================
-        # GENERATE ANSWER
-        # ==================================
-        with st.spinner("Generating answer..."):
+        try:
 
-            try:
+            response = (
+                groq_client.chat.completions.create(
 
-                response = groq_client.chat.completions.create(
-                    model="llama-3.1-8b-instant",
+                    model="llama-3.3-70b-versatile",
+
                     messages=[
+
                         {
                             "role": "system",
-                            "content": (
-                                "You answer questions "
-                                "about Tamil Nadu election "
-                                "affidavits using ONLY "
-                                "provided context."
-                            )
+                            "content":
+                            "You answer based only on affidavit evidence."
                         },
+
                         {
                             "role": "user",
                             "content": prompt
                         }
                     ],
+
                     temperature=0.2
                 )
-
-                answer = (
-                    response
-                    .choices[0]
-                    .message
-                    .content
-                )
-
-            except Exception as e:
-
-                answer = (
-                    "Generation failed.\n\n"
-                    f"{str(e)}"
-                )
-
-        # ==================================
-        # SHOW ANSWER
-        # ==================================
-        st.subheader("Answer")
-
-        st.success(answer)
-
-        # ==================================
-        # SHOW EVIDENCE
-        # ==================================
-        st.subheader("Retrieved Evidence")
-
-        shown_pages = set()
-
-        for doc, meta in matched_docs:
-
-            page = meta.get(
-                "page",
-                "Unknown"
             )
 
-            if page in shown_pages:
-                continue
-
-            shown_pages.add(page)
-
-            candidate = meta.get(
-                "candidate",
-                "Unknown"
+            answer = (
+                response.choices[0]
+                .message.content
             )
 
-            party = meta.get(
-                "party",
-                "Unknown"
+            st.subheader("Answer")
+
+            st.success(answer)
+
+        except Exception as e:
+
+            st.error(
+                f"Generation failed.\n\n{e}"
             )
 
-            constituency = meta.get(
-                "constituency",
-                "Unknown"
-            )
+    # ======================================
+    # SHOW RETRIEVED EVIDENCE
+    # ======================================
 
-            with st.expander(
-                f"{candidate} | {party} | Page {page}"
-            ):
+    st.subheader(
+        "Retrieved Evidence"
+    )
 
-                st.markdown(f"""
-### Candidate
-{candidate}
+    for doc, meta in filtered_docs:
 
-### Party
-{party}
+        st.markdown("---")
 
-### Constituency
-{constituency}
+        st.markdown(
+            f"""
+### {meta.get('candidate', 'Unknown')}
+"""
+        )
 
-### Page
-{page}
-""")
+        st.write(
+            f"Party: {meta.get('party', 'Unknown')}"
+        )
 
-                st.text(doc[:1500])
+        st.write(
+            f"Constituency: {meta.get('constituency', 'Unknown')}"
+        )
 
-            if len(shown_pages) >= 5:
-                break
+        st.write(
+            f"Page: {meta.get('page', 'Unknown')}"
+        )
+
+        st.text(doc[:1500])
