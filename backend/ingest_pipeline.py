@@ -1,13 +1,23 @@
-import json
+# ==========================================
+# FILE: backend/ingest_pipeline.py
+# ==========================================
+
 import re
+import json
 import chromadb
 
-from sentence_transformers import SentenceTransformer
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from sentence_transformers import (
+    SentenceTransformer
+)
+
+from langchain_text_splitters import (
+    RecursiveCharacterTextSplitter
+)
 
 # ==========================================
-# LOAD EXTRACTED PAGES
+# LOAD OCR DATA
 # ==========================================
+
 with open(
     "extracted_pages.json",
     "r",
@@ -19,6 +29,7 @@ with open(
 # ==========================================
 # EMBEDDING MODEL
 # ==========================================
+
 model = SentenceTransformer(
     "sentence-transformers/all-MiniLM-L6-v2"
 )
@@ -26,165 +37,90 @@ model = SentenceTransformer(
 # ==========================================
 # CHROMADB
 # ==========================================
+
 client = chromadb.PersistentClient(
     path="chroma_db"
 )
 
-# delete old collection if exists
+# DELETE OLD COLLECTION
 try:
+
     client.delete_collection(
         "candidate_affidavits"
     )
+
 except:
     pass
 
-collection = client.get_or_create_collection(
+collection = client.create_collection(
     "candidate_affidavits"
 )
 
 # ==========================================
 # TEXT SPLITTER
 # ==========================================
+
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=700,
-    chunk_overlap=100
+    chunk_size=500,
+    chunk_overlap=50
 )
 
 # ==========================================
-# HELPERS
+# REGEX PATTERNS
 # ==========================================
-def clean_text(text):
 
-    return " ".join(text.split())
+PAN_REGEX = (
+    r"[A-Z]{5}[0-9]{4}[A-Z]"
+)
 
+EMAIL_REGEX = (
+    r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+"
+)
 
-def detect_section(text):
+PHONE_REGEX = (
+    r"\b\d{10}\b"
+)
 
-    text_lower = text.lower()
-
-    if (
-        "income" in text_lower
-        or "tax return" in text_lower
-    ):
-
-        return "income"
-
-    elif (
-        "asset" in text_lower
-        or "liabilit" in text_lower
-    ):
-
-        return "assets"
-
-    elif "criminal" in text_lower:
-
-        return "criminal"
-
-    elif "pan" in text_lower:
-
-        return "pan"
-
-    elif "party" in text_lower:
-
-        return "party"
-
-    else:
-
-        return "general"
-
-
-def extract_pan(text):
-
-    pattern = r"[A-Z]{5}[0-9]{4}[A-Z]"
-
-    match = re.search(pattern, text)
-
-    if match:
-
-        return match.group(0)
-
-    return "Unknown"
-
-
-def extract_recent_income(text):
-
-    income_patterns = [
-
-        r"Rs\.?\s?[\d,]+\/?-?",
-        r"Rs\s?[\d,]+",
-        r"₹\s?[\d,]+"
-    ]
-
-    for pattern in income_patterns:
-
-        matches = re.findall(
-            pattern,
-            text
-        )
-
-        if matches:
-
-            return matches[0]
-
-    return "Unknown"
-
+MONEY_REGEX = (
+    r"\b\d{1,3}(?:,\d{2,3})+\b"
+)
 
 # ==========================================
-# STORE UNIQUE CANDIDATE SUMMARY
+# STRUCTURED STORAGE
 # ==========================================
+
 candidate_master_data = {}
 
 # ==========================================
-# INGESTION
+# CHUNK STORAGE
 # ==========================================
+
 doc_id = 0
+
+# ==========================================
+# PROCESS PAGES
+# ==========================================
 
 for page in pages:
 
-    metadata = page.get(
-        "metadata",
-        {}
-    )
+    text = page["text"]
 
-    candidate = metadata.get(
-        "candidate",
-        "Unknown"
-    )
+    metadata = page["metadata"]
 
-    party = metadata.get(
-        "party",
-        "Unknown"
-    )
+    candidate = metadata["candidate"]
 
-    constituency = metadata.get(
-        "constituency",
-        "Unknown"
-    )
+    party = metadata["party"]
 
-    page_no = metadata.get(
-        "page",
-        "Unknown"
-    )
+    constituency = metadata["constituency"]
 
-    raw_text = page.get(
-        "text",
-        ""
-    )
+    page_no = metadata["page"]
 
-    text = clean_text(raw_text)
+    source_file = metadata["source_file"]
 
     # ======================================
-    # EXTRACT STRUCTURED DATA
+    # CREATE CANDIDATE OBJECT
     # ======================================
-    pan_id = extract_pan(text)
 
-    recent_income = extract_recent_income(
-        text
-    )
-
-    # ======================================
-    # STORE MASTER CANDIDATE DATA
-    # ======================================
     if candidate not in candidate_master_data:
 
         candidate_master_data[candidate] = {
@@ -195,65 +131,129 @@ for page in pages:
 
             "constituency": constituency,
 
-            "pan_id": pan_id,
+            "pan_ids": [],
 
-            "recent_income": recent_income
+            "emails": [],
+
+            "phones": [],
+
+            "income_values": [],
+
+            "source_files": []
         }
 
-    else:
+    # ======================================
+    # REGEX EXTRACTION
+    # ======================================
 
-        # update missing PAN
-        if (
-            candidate_master_data[candidate]["pan_id"]
-            == "Unknown"
-            and pan_id != "Unknown"
-        ):
+    pans = re.findall(
+        PAN_REGEX,
+        text
+    )
 
-            candidate_master_data[candidate][
-                "pan_id"
-            ] = pan_id
+    emails = re.findall(
+        EMAIL_REGEX,
+        text
+    )
 
-        # update income
-        if (
-            candidate_master_data[candidate][
-                "recent_income"
-            ] == "Unknown"
-            and recent_income != "Unknown"
-        ):
+    phones = re.findall(
+        PHONE_REGEX,
+        text
+    )
 
-            candidate_master_data[candidate][
-                "recent_income"
-            ] = recent_income
+    money_values = re.findall(
+        MONEY_REGEX,
+        text
+    )
+
+    cleaned_money_values = []
+
+for value in money_values:
+
+    digits_only = value.replace(",", "")
+
+    if len(digits_only) >= 5:
+
+        cleaned_money_values.append(value)
+
 
     # ======================================
-    # SPLIT INTO CHUNKS
+    # STORE STRUCTURED DATA
     # ======================================
-    chunks = splitter.split_text(text)
 
-    for chunk in chunks:
+    candidate_master_data[
+        candidate
+    ]["pan_ids"].extend(pans)
 
-        section = detect_section(chunk)
+    candidate_master_data[
+        candidate
+    ]["emails"].extend(emails)
+
+    candidate_master_data[
+        candidate
+    ]["phones"].extend(phones)
+
+    candidate_master_data[
+        candidate
+    ]["income_values"].extend(
+        cleaned_money_values
+    )
+
+    candidate_master_data[
+        candidate
+    ]["source_files"].append(
+        source_file
+    )
+
+    # ======================================
+    # REMOVE DUPLICATES
+    # ======================================
+
+    for key in [
+
+        "pan_ids",
+
+        "emails",
+
+        "phones",
+
+        "income_values",
+
+        "source_files"
+    ]:
+
+        candidate_master_data[
+            candidate
+        ][key] = list(
+
+            set(
+
+                candidate_master_data[
+                    candidate
+                ][key]
+            )
+        )
+
+    # ======================================
+    # CHUNKING
+    # ======================================
+
+    chunks = splitter.split_text(
+        text
+    )
+
+    for chunk_num, chunk in enumerate(chunks):
 
         embedding = model.encode(
             chunk
         ).tolist()
 
-        chunk_metadata = {
+        chunk_id = (
 
-            "candidate": candidate,
-
-            "party": party,
-
-            "constituency": constituency,
-
-            "page": str(page_no),
-
-            "section": section,
-
-            "pan_id": pan_id,
-
-            "recent_income": recent_income
-        }
+            f"{candidate}_"
+            f"{page_no}_"
+            f"{chunk_num}"
+        )
 
         collection.add(
 
@@ -261,16 +261,28 @@ for page in pages:
 
             embeddings=[embedding],
 
-            metadatas=[chunk_metadata],
+            metadatas=[{
 
-            ids=[f"doc_{doc_id}"]
+                "candidate": candidate,
+
+                "party": party,
+
+                "constituency": constituency,
+
+                "page": page_no,
+
+                "source_file": source_file
+            }],
+
+            ids=[chunk_id]
         )
 
         doc_id += 1
 
 # ==========================================
-# STORE STRUCTURED CANDIDATE DATA
+# SAVE STRUCTURED DB
 # ==========================================
+
 with open(
     "candidate_master_data.json",
     "w",
@@ -280,13 +292,14 @@ with open(
     json.dump(
         candidate_master_data,
         f,
-        indent=4,
-        ensure_ascii=False
+        ensure_ascii=False,
+        indent=2
     )
 
 # ==========================================
 # DONE
 # ==========================================
+
 print(
     f"Stored {doc_id} chunks in ChromaDB"
 )
