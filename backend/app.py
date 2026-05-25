@@ -2,7 +2,6 @@
 # FILE: backend/app.py
 # ==========================================
 
-import re
 import json
 import streamlit as st
 import chromadb
@@ -86,12 +85,14 @@ collection = load_collection()
 # GROQ
 # ==========================================
 
+GROQ_API_KEY = "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"
+
 groq_client = Groq(
-    api_key="YOUR_GROQ_API_KEY"
+    api_key="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"
 )
 
 # ==========================================
-# HELPER FUNCTIONS
+# NORMALIZE TEXT
 # ==========================================
 
 def normalize(text):
@@ -111,14 +112,17 @@ def find_candidate(query):
 
     for candidate in candidate_names:
 
-        if normalize(candidate) in normalized_query:
+        if (
+            normalize(candidate)
+            in normalized_query
+        ):
 
             return candidate
 
     return None
 
 # ==========================================
-# GET PAN
+# STRUCTURED FUNCTIONS
 # ==========================================
 
 def get_pan(candidate):
@@ -127,8 +131,6 @@ def get_pan(candidate):
         candidate
     ].get("pan_ids", [])
 
-# ==========================================
-# GET INCOME
 # ==========================================
 
 def get_income(candidate):
@@ -151,10 +153,10 @@ def get_income(candidate):
 
     cleaned = list(set(cleaned))
 
+    cleaned.sort()
+
     return cleaned[:20]
 
-# ==========================================
-# GET EMAILS
 # ==========================================
 
 def get_emails(candidate):
@@ -164,8 +166,6 @@ def get_emails(candidate):
     ].get("emails", [])
 
 # ==========================================
-# GET PHONES
-# ==========================================
 
 def get_phones(candidate):
 
@@ -174,14 +174,52 @@ def get_phones(candidate):
     ].get("phones", [])
 
 # ==========================================
-# GET PARTY
-# ==========================================
 
 def get_party(candidate):
 
     return candidate_master_data[
         candidate
     ].get("party", "Unknown")
+
+# ==========================================
+
+def get_constituency(candidate):
+
+    return candidate_master_data[
+        candidate
+    ].get("constituency", "Unknown")
+
+# ==========================================
+# PROFILE GENERATOR
+# ==========================================
+
+def get_candidate_profile(candidate):
+
+    data = candidate_master_data[
+        candidate
+    ]
+
+    profile = f"""
+Candidate: {candidate}
+
+Party: {data['party']}
+
+Constituency: {data['constituency']}
+
+PAN IDs:
+{", ".join(data['pan_ids'][:5])}
+
+Phone Numbers:
+{", ".join(data['phones'][:5])}
+
+Emails:
+{", ".join(data['emails'][:5])}
+
+Known Income Values:
+{", ".join(get_income(candidate)[:10])}
+"""
+
+    return profile
 
 # ==========================================
 # COMPARISON ENGINE
@@ -299,7 +337,7 @@ def top_richest():
     return candidates[:10]
 
 # ==========================================
-# VECTOR RAG
+# VECTOR SEARCH
 # ==========================================
 
 def rag_search(query):
@@ -314,7 +352,7 @@ def rag_search(query):
             query_embedding
         ],
 
-        n_results=5
+        n_results=10
     )
 
     docs = results["documents"][0]
@@ -324,7 +362,7 @@ def rag_search(query):
     return list(zip(docs, metas))
 
 # ==========================================
-# RAG GENERATION
+# GENERATE ANSWER
 # ==========================================
 
 def generate_answer(query, context):
@@ -332,7 +370,7 @@ def generate_answer(query, context):
     prompt = f"""
 You are an election affidavit analyst.
 
-Answer ONLY from the provided context.
+Answer ONLY using the context below.
 
 Context:
 {context}
@@ -340,7 +378,7 @@ Context:
 Question:
 {query}
 
-Answer clearly.
+Give a clean and professional answer.
 """
 
     response = (
@@ -353,7 +391,7 @@ Answer clearly.
                 {
                     "role": "system",
                     "content":
-                    "You answer based only on affidavit evidence."
+                    "You explain election affidavits professionally."
                 },
 
                 {
@@ -362,7 +400,7 @@ Answer clearly.
                 }
             ],
 
-            temperature=0.2
+            temperature=0.3
         )
     )
 
@@ -381,20 +419,144 @@ query = st.text_input(
 )
 
 # ==========================================
-# MAIN QUERY ENGINE
+# MAIN ENGINE
 # ==========================================
 
 if query:
 
     query_lower = query.lower()
 
-    matched_candidate = find_candidate(query)
+    matched_candidate = find_candidate(
+        query
+    )
+
+    # ======================================
+    # WHO IS / PROFILE QUERY
+    # ======================================
+
+    if (
+        "who is" in query_lower
+        or
+        "tell me about" in query_lower
+    ):
+
+        if matched_candidate:
+
+            st.subheader(
+                "Candidate Profile"
+            )
+
+            profile = get_candidate_profile(
+                matched_candidate
+            )
+
+            st.success(profile)
+
+        else:
+
+            st.warning(
+                "Candidate not found."
+            )
+
+    # ======================================
+    # EXPLAIN / DESCRIBE QUERY
+    # ======================================
+
+    elif (
+
+        "explain" in query_lower
+        or
+        "describe" in query_lower
+        or
+        "summarize" in query_lower
+
+    ):
+
+        if matched_candidate:
+
+            retrieved = rag_search(
+                matched_candidate
+            )
+
+            filtered = []
+
+            for doc, meta in retrieved:
+
+                if (
+                    meta["candidate"]
+                    ==
+                    matched_candidate
+                ):
+
+                    filtered.append(
+                        (doc, meta)
+                    )
+
+            context = "\n\n".join(
+
+                [
+
+                    f"""
+Candidate:
+{meta['candidate']}
+
+Party:
+{meta['party']}
+
+Page:
+{meta['page']}
+
+Content:
+{doc}
+"""
+
+                    for doc, meta
+                    in filtered
+                ]
+            )
+
+            prompt = f"""
+Explain the candidate clearly using affidavit evidence.
+
+Candidate:
+{matched_candidate}
+
+Context:
+{context}
+
+Explain:
+- candidate background
+- financial details
+- affidavit details
+- notable information
+
+Write a clean summary.
+"""
+
+            try:
+
+                answer = generate_answer(
+                    prompt,
+                    context
+                )
+
+                st.subheader(
+                    "Candidate Explanation"
+                )
+
+                st.success(answer)
+
+            except Exception as e:
+
+                st.error(
+                    f"Generation failed: {e}"
+                )
 
     # ======================================
     # PAN QUERY
     # ======================================
 
-    if "pan" in query_lower:
+    elif "pan" in query_lower:
 
         if matched_candidate:
 
@@ -402,7 +564,9 @@ if query:
                 matched_candidate
             )
 
-            st.subheader("PAN Details")
+            st.subheader(
+                "PAN Details"
+            )
 
             if pans:
 
@@ -474,15 +638,27 @@ Income Values:
                 "Email Details"
             )
 
-            st.success(
-                ", ".join(emails)
-            )
+            if emails:
+
+                st.success(
+                    ", ".join(emails)
+                )
+
+            else:
+
+                st.warning(
+                    "No emails found."
+                )
 
     # ======================================
     # PHONE QUERY
     # ======================================
 
-    elif "phone" in query_lower:
+    elif (
+        "phone" in query_lower
+        or
+        "mobile" in query_lower
+    ):
 
         if matched_candidate:
 
@@ -494,9 +670,17 @@ Income Values:
                 "Phone Details"
             )
 
-            st.success(
-                ", ".join(phones)
-            )
+            if phones:
+
+                st.success(
+                    ", ".join(phones)
+                )
+
+            else:
+
+                st.warning(
+                    "No phone numbers found."
+                )
 
     # ======================================
     # PARTY QUERY
@@ -525,7 +709,7 @@ party.
             )
 
     # ======================================
-    # COMPARISON ENGINE
+    # COMPARE QUERY
     # ======================================
 
     elif "compare" in query_lower:
@@ -564,7 +748,7 @@ party.
             )
 
     # ======================================
-    # PARTY COUNT
+    # PARTY ANALYTICS
     # ======================================
 
     elif (
@@ -573,42 +757,60 @@ party.
         "candidate" in query_lower
     ):
 
-        for party in [
+        parties = [
 
             "DMK",
             "AIADMK",
             "TVK",
             "BJP",
             "INC"
-        ]:
+        ]
+
+        found_party = None
+
+        for party in parties:
 
             if party.lower() in query_lower:
 
-                count = (
-                    count_party_candidates(
-                        party
-                    )
-                )
+                found_party = party
 
-                st.subheader(
-                    "Party Analytics"
-                )
+                break
 
-                st.success(
+        if found_party:
 
-                    f"""
-{party}
+            count = count_party_candidates(
+                found_party
+            )
+
+            st.subheader(
+                "Party Analytics"
+            )
+
+            st.success(
+
+                f"""
+{found_party}
 has
 {count}
 candidates.
 """
-                )
+            )
+
+        else:
+
+            st.warning(
+                "Party not found."
+            )
 
     # ======================================
-    # TOP RICHEST
+    # RICHEST CANDIDATES
     # ======================================
 
-    elif "richest" in query_lower:
+    elif (
+        "richest" in query_lower
+        or
+        "top richest" in query_lower
+    ):
 
         richest = top_richest()
 
@@ -632,7 +834,7 @@ candidates.
         })
 
     # ======================================
-    # VECTOR RAG
+    # GENERAL RAG SEARCH
     # ======================================
 
     else:
@@ -678,11 +880,11 @@ Content:
         except Exception as e:
 
             st.error(
-                f"Generation failed:\n{e}"
+                f"Generation failed: {e}"
             )
 
         # ==================================
-        # SHOW EVIDENCE
+        # EVIDENCE
         # ==================================
 
         st.subheader(
