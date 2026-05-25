@@ -85,10 +85,10 @@ collection = load_collection()
 # GROQ
 # ==========================================
 
-GROQ_API_KEY = "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"
+GROQ_API_KEY = ""
 
 groq_client = Groq(
-    api_key="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"
+    api_key=""
 )
 
 # ==========================================

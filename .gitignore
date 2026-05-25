@@ -40,7 +40,7 @@ huggingface/
 torch_cache/
 
 # Temporary files
-temp/
+temp/git status --ignored
 tmp/
 
 # Build artifacts
@@ -49,3 +49,5 @@ build/
 
 # Docker
 *.tar
+
+.streamlit/secrets.toml
