@@ -52,7 +52,7 @@ candidate_names = list(
 )
 
 # ==========================================
-# EMBEDDING MODEL
+# LOAD EMBEDDING MODEL
 # ==========================================
 
 @st.cache_resource
@@ -65,7 +65,7 @@ def load_embedding_model():
 model = load_embedding_model()
 
 # ==========================================
-# CHROMADB
+# LOAD CHROMADB
 # ==========================================
 
 @st.cache_resource
@@ -85,14 +85,14 @@ collection = load_collection()
 # GROQ
 # ==========================================
 
-GROQ_API_KEY = ""
+GROQ_API_KEY = "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"
 
 groq_client = Groq(
-    api_key=""
+    api_key="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"
 )
 
 # ==========================================
-# NORMALIZE TEXT
+# NORMALIZE
 # ==========================================
 
 def normalize(text):
@@ -122,7 +122,7 @@ def find_candidate(query):
     return None
 
 # ==========================================
-# STRUCTURED FUNCTIONS
+# GET PAN
 # ==========================================
 
 def get_pan(candidate):
@@ -131,6 +131,8 @@ def get_pan(candidate):
         candidate
     ].get("pan_ids", [])
 
+# ==========================================
+# GET INCOME
 # ==========================================
 
 def get_income(candidate):
@@ -158,6 +160,8 @@ def get_income(candidate):
     return cleaned[:20]
 
 # ==========================================
+# GET EMAILS
+# ==========================================
 
 def get_emails(candidate):
 
@@ -165,6 +169,8 @@ def get_emails(candidate):
         candidate
     ].get("emails", [])
 
+# ==========================================
+# GET PHONES
 # ==========================================
 
 def get_phones(candidate):
@@ -174,6 +180,8 @@ def get_phones(candidate):
     ].get("phones", [])
 
 # ==========================================
+# GET PARTY
+# ==========================================
 
 def get_party(candidate):
 
@@ -181,6 +189,8 @@ def get_party(candidate):
         candidate
     ].get("party", "Unknown")
 
+# ==========================================
+# GET CONSTITUENCY
 # ==========================================
 
 def get_constituency(candidate):
@@ -222,7 +232,7 @@ Known Income Values:
     return profile
 
 # ==========================================
-# COMPARISON ENGINE
+# COMPARE CANDIDATES
 # ==========================================
 
 def compare_candidates(c1, c2):
@@ -270,7 +280,7 @@ def compare_candidates(c1, c2):
     return comparison
 
 # ==========================================
-# ANALYTICS
+# COUNT PARTY CANDIDATES
 # ==========================================
 
 def count_party_candidates(party):
@@ -337,6 +347,95 @@ def top_richest():
     return candidates[:10]
 
 # ==========================================
+# LIST CANDIDATES
+# ==========================================
+
+def list_candidates_by_constituency(
+    constituency
+):
+
+    results = []
+
+    for candidate, data in (
+        candidate_master_data.items()
+    ):
+
+        if (
+            data["constituency"]
+            .lower()
+            ==
+            constituency.lower()
+        ):
+
+            results.append(
+
+                {
+                    "Candidate": candidate,
+                    "Party": data["party"]
+                }
+            )
+
+    return results
+
+# ==========================================
+# HIGHEST INCOME CANDIDATE
+# ==========================================
+
+def highest_income_candidate(
+    constituency
+):
+
+    best_candidate = None
+
+    best_income = 0
+
+    for candidate, data in (
+        candidate_master_data.items()
+    ):
+
+        if (
+            data["constituency"]
+            .lower()
+            !=
+            constituency.lower()
+        ):
+
+            continue
+
+        incomes = get_income(candidate)
+
+        numeric = []
+
+        for income in incomes:
+
+            try:
+
+                numeric.append(
+
+                    int(
+                        income.replace(",", "")
+                    )
+                )
+
+            except:
+                pass
+
+        if numeric:
+
+            max_income = max(numeric)
+
+            if max_income > best_income:
+
+                best_income = max_income
+
+                best_candidate = candidate
+
+    return (
+        best_candidate,
+        best_income
+    )
+
+# ==========================================
 # VECTOR SEARCH
 # ==========================================
 
@@ -378,7 +477,7 @@ Context:
 Question:
 {query}
 
-Give a clean and professional answer.
+Give a professional answer.
 """
 
     response = (
@@ -411,7 +510,7 @@ Give a clean and professional answer.
     )
 
 # ==========================================
-# USER QUERY
+# USER INPUT
 # ==========================================
 
 query = st.text_input(
@@ -431,7 +530,7 @@ if query:
     )
 
     # ======================================
-    # WHO IS / PROFILE QUERY
+    # WHO IS
     # ======================================
 
     if (
@@ -446,20 +545,15 @@ if query:
                 "Candidate Profile"
             )
 
-            profile = get_candidate_profile(
-                matched_candidate
-            )
+            st.success(
 
-            st.success(profile)
-
-        else:
-
-            st.warning(
-                "Candidate not found."
+                get_candidate_profile(
+                    matched_candidate
+                )
             )
 
     # ======================================
-    # EXPLAIN / DESCRIBE QUERY
+    # EXPLAIN
     # ======================================
 
     elif (
@@ -478,65 +572,27 @@ if query:
                 matched_candidate
             )
 
-            filtered = []
-
-            for doc, meta in retrieved:
-
-                if (
-                    meta["candidate"]
-                    ==
-                    matched_candidate
-                ):
-
-                    filtered.append(
-                        (doc, meta)
-                    )
-
             context = "\n\n".join(
 
                 [
 
-                    f"""
-Candidate:
-{meta['candidate']}
-
-Party:
-{meta['party']}
-
-Page:
-{meta['page']}
-
-Content:
-{doc}
-"""
+                    doc
 
                     for doc, meta
-                    in filtered
+                    in retrieved
+
+                    if (
+                        meta["candidate"]
+                        ==
+                        matched_candidate
+                    )
                 ]
             )
-
-            prompt = f"""
-Explain the candidate clearly using affidavit evidence.
-
-Candidate:
-{matched_candidate}
-
-Context:
-{context}
-
-Explain:
-- candidate background
-- financial details
-- affidavit details
-- notable information
-
-Write a clean summary.
-"""
 
             try:
 
                 answer = generate_answer(
-                    prompt,
+                    query,
                     context
                 )
 
@@ -553,105 +609,70 @@ Write a clean summary.
                 )
 
     # ======================================
-    # PAN QUERY
+    # PAN
     # ======================================
 
     elif "pan" in query_lower:
 
         if matched_candidate:
 
-            pans = get_pan(
-                matched_candidate
-            )
-
             st.subheader(
                 "PAN Details"
             )
 
-            if pans:
+            st.success(
 
-                st.success(
-
-                    f"""
-Candidate:
-{matched_candidate}
-
-PAN IDs:
-{", ".join(pans)}
-"""
+                ", ".join(
+                    get_pan(
+                        matched_candidate
+                    )
                 )
-
-            else:
-
-                st.warning(
-                    "PAN not found."
-                )
+            )
 
     # ======================================
-    # INCOME QUERY
+    # INCOME
     # ======================================
 
     elif "income" in query_lower:
 
         if matched_candidate:
 
-            incomes = get_income(
-                matched_candidate
-            )
-
             st.subheader(
                 "Income Details"
             )
 
-            if incomes:
+            st.success(
 
-                st.success(
-
-                    f"""
-Candidate:
-{matched_candidate}
-
-Income Values:
-{", ".join(incomes)}
-"""
+                ", ".join(
+                    get_income(
+                        matched_candidate
+                    )
                 )
-
-            else:
-
-                st.warning(
-                    "Income not found."
-                )
+            )
 
     # ======================================
-    # EMAIL QUERY
+    # EMAIL
     # ======================================
 
     elif "email" in query_lower:
 
         if matched_candidate:
 
-            emails = get_emails(
-                matched_candidate
-            )
-
             st.subheader(
                 "Email Details"
             )
 
-            if emails:
+            st.success(
 
-                st.success(
-                    ", ".join(emails)
+                ", ".join(
+                    get_emails(
+                        matched_candidate
+                    )
                 )
-
-            else:
-
-                st.warning(
-                    "No emails found."
-                )
+            )
 
     # ======================================
-    # PHONE QUERY
+    # PHONE
     # ======================================
 
     elif (
@@ -662,37 +683,26 @@ Income Values:
 
         if matched_candidate:
 
-            phones = get_phones(
-                matched_candidate
-            )
-
             st.subheader(
                 "Phone Details"
             )
 
-            if phones:
+            st.success(
 
-                st.success(
-                    ", ".join(phones)
+                ", ".join(
+                    get_phones(
+                        matched_candidate
+                    )
                 )
-
-            else:
-
-                st.warning(
-                    "No phone numbers found."
-                )
+            )
 
     # ======================================
-    # PARTY QUERY
+    # PARTY
     # ======================================
 
     elif "party" in query_lower:
 
         if matched_candidate:
-
-            party = get_party(
-                matched_candidate
-            )
 
             st.subheader(
                 "Party Details"
@@ -703,13 +713,13 @@ Income Values:
                 f"""
 {matched_candidate}
 belongs to
-{party}
+{get_party(matched_candidate)}
 party.
 """
             )
 
     # ======================================
-    # COMPARE QUERY
+    # COMPARE
     # ======================================
 
     elif "compare" in query_lower:
@@ -727,24 +737,77 @@ party.
 
         if len(found) >= 2:
 
-            c1 = found[0]
-            c2 = found[1]
-
-            comparison = compare_candidates(
-                c1,
-                c2
-            )
-
             st.subheader(
                 "Candidate Comparison"
             )
 
-            st.table(comparison)
+            st.table(
 
-        else:
+                compare_candidates(
+                    found[0],
+                    found[1]
+                )
+            )
 
-            st.warning(
-                "Need two candidates."
+    # ======================================
+    # LIST ALL CANDIDATES
+    # ======================================
+
+    elif (
+
+        "list" in query_lower
+        and
+        "candidate" in query_lower
+
+    ):
+
+        if "kolathur" in query_lower:
+
+            results = (
+                list_candidates_by_constituency(
+                    "KOLATHUR"
+                )
+            )
+
+            st.subheader(
+                "Kolathur Candidates"
+            )
+
+            st.table(results)
+
+    # ======================================
+    # HIGHEST INCOME
+    # ======================================
+
+    elif (
+
+        "highest income" in query_lower
+        or
+        "richest candidate" in query_lower
+
+    ):
+
+        if "kolathur" in query_lower:
+
+            candidate, income = (
+                highest_income_candidate(
+                    "KOLATHUR"
+                )
+            )
+
+            st.subheader(
+                "Highest Income Candidate"
+            )
+
+            st.success(
+
+                f"""
+Candidate:
+{candidate}
+
+Highest Known Income:
+₹{income:,}
+"""
             )
 
     # ======================================
@@ -766,51 +829,35 @@ party.
             "INC"
         ]
 
-        found_party = None
-
         for party in parties:
 
             if party.lower() in query_lower:
 
-                found_party = party
+                count = (
+                    count_party_candidates(
+                        party
+                    )
+                )
 
-                break
+                st.subheader(
+                    "Party Analytics"
+                )
 
-        if found_party:
+                st.success(
 
-            count = count_party_candidates(
-                found_party
-            )
-
-            st.subheader(
-                "Party Analytics"
-            )
-
-            st.success(
-
-                f"""
-{found_party}
+                    f"""
+{party}
 has
 {count}
 candidates.
 """
-            )
-
-        else:
-
-            st.warning(
-                "Party not found."
-            )
+                )
 
     # ======================================
-    # RICHEST CANDIDATES
+    # TOP RICHEST
     # ======================================
 
-    elif (
-        "richest" in query_lower
-        or
-        "top richest" in query_lower
-    ):
+    elif "top richest" in query_lower:
 
         richest = top_richest()
 
@@ -834,7 +881,24 @@ candidates.
         })
 
     # ======================================
-    # GENERAL RAG SEARCH
+# DIRECT CANDIDATE QUERY
+# ======================================
+
+    elif matched_candidate:
+
+        st.subheader(
+            "Candidate Profile"
+        )
+
+        st.success(
+
+            get_candidate_profile(
+                matched_candidate
+            )
+        )
+
+    # ======================================
+    # GENERAL RAG
     # ======================================
 
     else:
@@ -896,10 +960,7 @@ Content:
             st.markdown("---")
 
             st.markdown(
-
-                f"""
-### {meta['candidate']}
-"""
+                f"### {meta['candidate']}"
             )
 
             st.write(
