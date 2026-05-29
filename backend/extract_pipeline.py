@@ -85,7 +85,7 @@ for filename in os.listdir(PDF_FOLDER):
 
             text = pytesseract.image_to_string(
                 image,
-                lang="eng"
+                lang="eng+tam"
             )
 
             page_data = {

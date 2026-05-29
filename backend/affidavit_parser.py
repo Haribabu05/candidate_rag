@@ -1,7 +1,8 @@
-# backend/affidavit_parser.py
+# ==========================================
+# FILE: backend/affidavit_parser.py
+# ==========================================
 
 import re
-import json
 
 # ==========================================
 # REGEX
@@ -18,10 +19,6 @@ EMAIL_REGEX = (
 
 MONEY_REGEX = (
     r"\d{1,3}(?:,\d{2,3})+"
-)
-
-YEAR_REGEX = (
-    r"(20\d{2}-20\d{2})"
 )
 
 # ==========================================
@@ -59,9 +56,12 @@ def get_section(
 
         for keyword in keywords:
 
-            if keyword in lower:
+            if keyword.lower() in lower:
 
-                section_text += "\n" + text
+                section_text += (
+                    "\n"
+                    + text
+                )
 
                 break
 
@@ -107,58 +107,99 @@ def extract_emails(text):
     return list(set(emails))
 
 # ==========================================
-# INCOME TAX
+# EDUCATION EXTRACTION
 # ==========================================
 
-def extract_income_tax(
-    income_section
+def extract_education(
+    pages
 ):
 
-    income_data = {}
+    education_keywords = [
 
-    lines = income_section.splitlines()
+        "sslc",
+        "hsc",
+        "graduate",
+        "post graduate",
+        "mba",
+        "b.e",
+        "b.tech",
+        "m.e",
+        "m.tech",
+        "b.sc",
+        "m.sc",
+        "b.a",
+        "m.a",
+        "phd",
+        "doctor",
+        "diploma",
+        "llb",
+        "law"
+    ]
 
-    for i in range(len(lines)):
+    # ======================================
+    # SEARCH PAGE BY PAGE
+    # ======================================
 
-        line = lines[i]
+    for page in pages:
 
-        year_match = re.search(
-            YEAR_REGEX,
-            line
+        text = page["text"]
+
+        lower = text.lower()
+
+        # ==================================
+        # LOOK FOR EDUCATION SECTION
+        # ==================================
+
+        if (
+
+            "educational qualification"
+            in lower
+
+            or
+
+            "qualification"
+            in lower
+
+            or
+
+            "education"
+            in lower
+        ):
+
+            lines = text.splitlines()
+
+            for line in lines:
+
+                clean = line.lower()
+
+                for keyword in education_keywords:
+
+                    if keyword in clean:
+
+                        return keyword.upper()
+
+    # ======================================
+    # GLOBAL FALLBACK SEARCH
+    # ======================================
+
+    combined = ""
+
+    for page in pages:
+
+        combined += (
+            "\n"
+            + page["text"]
         )
 
-        if year_match:
+    combined = combined.lower()
 
-            year = year_match.group()
+    for keyword in education_keywords:
 
-            combined = line
+        if keyword in combined:
 
-            if i + 1 < len(lines):
+            return keyword.upper()
 
-                combined += (
-                    " "
-                    + lines[i + 1]
-                )
-
-            money_matches = re.findall(
-                MONEY_REGEX,
-                combined
-            )
-
-            if money_matches:
-
-                amount = max(
-                    money_matches,
-                    key=len
-                )
-
-                income_data[
-                    year
-                ] = clean_money(
-                    amount
-                )
-
-    return income_data
+    return "Unknown"
 
 # ==========================================
 # CRIMINAL CASES
@@ -180,27 +221,66 @@ def extract_criminal_cases(
 
         return 0
 
-    case_matches = re.findall(
-        r"\b\d+\b",
-        criminal_section
-    )
+    return 0
 
-    if case_matches:
+# ==========================================
+# INCOME TAX
+# ==========================================
 
-        try:
+def extract_income_tax(
+    income_section
+):
 
-            return max(
-                [
-                    int(x)
-                    for x in case_matches
-                ]
+    income_data = {}
+
+    lines = income_section.splitlines()
+
+    for i in range(len(lines)):
+
+        line = lines[i]
+
+        year_match = re.search(
+            r"(20\d{2})",
+            line
+        )
+
+        if year_match:
+
+            year = year_match.group()
+
+            combined = line
+
+            if i + 1 < len(lines):
+
+                combined += (
+                    " "
+                    + lines[i + 1]
+                )
+
+            money_matches = re.findall(
+                MONEY_REGEX,
+                combined
             )
 
-        except:
+            cleaned = []
 
-            return 0
+            for value in money_matches:
 
-    return 0
+                amount = clean_money(
+                    value
+                )
+
+                if amount > 1000:
+
+                    cleaned.append(amount)
+
+            if cleaned:
+
+                income_data[
+                    year
+                ] = max(cleaned)
+
+    return income_data
 
 # ==========================================
 # MOVABLE ASSETS
@@ -290,43 +370,6 @@ def extract_liabilities(
     return 0
 
 # ==========================================
-# EDUCATION
-# ==========================================
-
-def extract_education(
-    education_section
-):
-
-    education_keywords = [
-
-        "graduate",
-        "post graduate",
-        "mba",
-        "b.e",
-        "b.tech",
-        "m.e",
-        "m.tech",
-        "sslc",
-        "hsc",
-        "doctor",
-        "phd",
-        "b.sc",
-        "m.sc",
-        "b.a",
-        "m.a"
-    ]
-
-    lower = education_section.lower()
-
-    for keyword in education_keywords:
-
-        if keyword in lower:
-
-            return keyword.title()
-
-    return "Unknown"
-
-# ==========================================
 # MAIN PARSER
 # ==========================================
 
@@ -379,7 +422,8 @@ def parse_candidate_pages(
         [
             "income tax",
             "income return",
-            "income shown"
+            "income shown",
+            "வருமான"
         ]
     )
 
@@ -390,7 +434,8 @@ def parse_candidate_pages(
         [
             "criminal cases",
             "criminal case",
-            "convicted"
+            "convicted",
+            "குற்றவியல்"
         ]
     )
 
@@ -399,7 +444,8 @@ def parse_candidate_pages(
         pages,
 
         [
-            "movable assets"
+            "movable assets",
+            "அசையும்"
         ]
     )
 
@@ -408,7 +454,8 @@ def parse_candidate_pages(
         pages,
 
         [
-            "immovable assets"
+            "immovable assets",
+            "அசையாச்"
         ]
     )
 
@@ -418,17 +465,8 @@ def parse_candidate_pages(
 
         [
             "liabilities",
-            "dues"
-        ]
-    )
-
-    education_section = get_section(
-
-        pages,
-
-        [
-            "educational qualification",
-            "qualification"
+            "dues",
+            "கடன்"
         ]
     )
 
@@ -465,7 +503,7 @@ def parse_candidate_pages(
     )
 
     education = extract_education(
-        education_section
+        pages
     )
 
     # ======================================
@@ -480,12 +518,9 @@ def parse_candidate_pages(
 
         "constituency": constituency,
 
-        "contact": {
+        "phones": phones,
 
-            "phones": phones,
-
-            "emails": emails
-        },
+        "emails": emails,
 
         "pan_ids": pan_ids,
 

@@ -24,7 +24,7 @@ with open(
     encoding="utf-8"
 ) as f:
 
-    pages = json.load(f)
+    extracted_pages = json.load(f)
 
 # ==========================================
 # EMBEDDING MODEL
@@ -89,19 +89,63 @@ MONEY_REGEX = (
 # STRUCTURED STORAGE
 # ==========================================
 
-candidate_master_data = {}
+# ==========================================
+# IMPORT PARSER
+# ==========================================
+
+from affidavit_parser import (
+    parse_candidate_pages
+)
 
 # ==========================================
-# CHUNK STORAGE
+# GROUP PAGES BY CANDIDATE
+# ==========================================
+
+candidate_pages = {}
+
+for page in extracted_pages:
+
+    candidate = (
+        page["metadata"]["candidate"]
+    )
+
+    if candidate not in candidate_pages:
+
+        candidate_pages[
+            candidate
+        ] = []
+
+    candidate_pages[
+        candidate
+    ].append(page)
+
+# ==========================================
+# PARSE CANDIDATES
+# ==========================================
+
+candidate_master_data = {}
+
+for candidate, pages in (
+    candidate_pages.items()
+):
+
+    parsed = parse_candidate_pages(
+
+        candidate,
+        pages
+    )
+
+    candidate_master_data[
+        candidate
+    ] = parsed
+
+# ==========================================
+# VECTOR STORAGE
 # ==========================================
 
 doc_id = 0
 
-# ==========================================
-# PROCESS PAGES
-# ==========================================
-
-for page in pages:
+for page in extracted_pages:
 
     text = page["text"]
 
@@ -111,132 +155,15 @@ for page in pages:
 
     party = metadata["party"]
 
-    constituency = metadata["constituency"]
+    constituency = (
+        metadata["constituency"]
+    )
 
     page_no = metadata["page"]
 
-    source_file = metadata["source_file"]
-
-    # ======================================
-    # CREATE CANDIDATE OBJECT
-    # ======================================
-
-    if candidate not in candidate_master_data:
-
-        candidate_master_data[candidate] = {
-
-            "candidate": candidate,
-
-            "party": party,
-
-            "constituency": constituency,
-
-            "pan_ids": [],
-
-            "emails": [],
-
-            "phones": [],
-
-            "income_values": [],
-
-            "source_files": []
-        }
-
-    # ======================================
-    # REGEX EXTRACTION
-    # ======================================
-
-    pans = re.findall(
-        PAN_REGEX,
-        text
-    )
-
-    emails = re.findall(
-        EMAIL_REGEX,
-        text
-    )
-
-    phones = re.findall(
-        PHONE_REGEX,
-        text
-    )
-
-    money_values = re.findall(
-        MONEY_REGEX,
-        text
-    )
-
-    cleaned_money_values = []
-
-for value in money_values:
-
-    digits_only = value.replace(",", "")
-
-    if len(digits_only) >= 5:
-
-        cleaned_money_values.append(value)
-
-
-    # ======================================
-    # STORE STRUCTURED DATA
-    # ======================================
-
-    candidate_master_data[
-        candidate
-    ]["pan_ids"].extend(pans)
-
-    candidate_master_data[
-        candidate
-    ]["emails"].extend(emails)
-
-    candidate_master_data[
-        candidate
-    ]["phones"].extend(phones)
-
-    candidate_master_data[
-        candidate
-    ]["income_values"].extend(
-        cleaned_money_values
-    )
-
-    candidate_master_data[
-        candidate
-    ]["source_files"].append(
-        source_file
-    )
-
-    # ======================================
-    # REMOVE DUPLICATES
-    # ======================================
-
-    for key in [
-
-        "pan_ids",
-
-        "emails",
-
-        "phones",
-
-        "income_values",
-
-        "source_files"
-    ]:
-
-        candidate_master_data[
-            candidate
-        ][key] = list(
-
-            set(
-
-                candidate_master_data[
-                    candidate
-                ][key]
-            )
-        )
-
-    # ======================================
-    # CHUNKING
-    # ======================================
+    source_file = metadata[
+        "source_file"
+    ]
 
     chunks = splitter.split_text(
         text
@@ -249,7 +176,6 @@ for value in money_values:
         ).tolist()
 
         chunk_id = (
-
             f"{candidate}_"
             f"{page_no}_"
             f"{chunk_num}"
@@ -290,9 +216,13 @@ with open(
 ) as f:
 
     json.dump(
+
         candidate_master_data,
+
         f,
+
         ensure_ascii=False,
+
         indent=2
     )
 

@@ -51,3 +51,21 @@ build/
 *.tar
 
 .streamlit/secrets.toml
+
+# Python virtual envs
+venv/
+paddle_env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# ChromaDB
+chroma_db/
+
+# Temporary OCR files
+temp_page.jpg
+
+# OS files
+.DS_Store
+Thumbs.db
