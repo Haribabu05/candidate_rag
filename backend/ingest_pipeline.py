@@ -19,7 +19,7 @@ from langchain_text_splitters import (
 # ==========================================
 
 with open(
-    "extracted_pages.json",
+    "extracted_pages_paddle.json",
     "r",
     encoding="utf-8"
 ) as f:

@@ -3,36 +3,41 @@
     "candidate": "Aathithya",
     "party": "SP",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9884082892",
-      "9840052902"
-    ],
+    "phones": [],
     "emails": [
-      "prabanjam1977@gmail.com"
+      "prabanjaml977@gmail.comm"
     ],
     "pan_ids": [
-      "CHUPJ9056N"
+      "CHUPJ9056N",
+      "DBSPA9549A",
+      "CHUPI9056N"
     ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 490000,
-    "immovable_assets": 490000,
-    "liabilities": 490000,
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "B.A"
   },
   "ALNareshKumar": {
     "candidate": "ALNareshKumar",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [],
-    "emails": [],
+    "phones": [
+      "9444442113"
+    ],
+    "emails": [
+      "gniinareshkumar04693@gmail.compgng"
+    ],
     "pan_ids": [
       "AXQPN3659R"
     ],
-    "income_tax": {},
+    "income_tax": {
+      "2022": 912202
+    },
     "criminal_cases": 0,
-    "movable_assets": 10000,
-    "immovable_assets": 10000,
+    "movable_assets": 0,
+    "immovable_assets": 0,
     "liabilities": 0,
     "education": "SSLC"
   },
@@ -41,22 +46,18 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "8552287335",
-      "6374314307",
-      "9445217582"
+      "6374314307"
     ],
-    "emails": [
-      "spisocialpartyofindia@gmail.com"
-    ],
+    "emails": [],
     "pan_ids": [
-      "BESPA8733B",
-      "ALPPA8041H"
+      "ALPPA8041H",
+      "BESPA8733B"
     ],
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
-    "immovable_assets": 2950000,
-    "liabilities": 2880000,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "SSLC"
   },
   "ArulDossA": {
@@ -83,12 +84,13 @@
     "party": "MNK",
     "constituency": "KOLATHUR",
     "phones": [
-      "79714௦8361",
-      "6550012106"
+      "7871468361"
     ],
     "emails": [],
     "pan_ids": [],
-    "income_tax": {},
+    "income_tax": {
+      "2025": 46800
+    },
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
@@ -100,31 +102,35 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9710653799",
-      "8056090171",
-      "7695999942"
+      "8056090171"
     ],
-    "emails": [],
+    "emails": [
+      "rpremierpropertiesskj@gmail.comm"
+    ],
     "pan_ids": [
-      "BAIPV8625D"
+      "BAIPV8625D",
+      "BQIPT1932K",
+      "JBQPT1932K",
+      "CLPTJ4850B"
     ],
-    "income_tax": {},
+    "income_tax": {
+      "2024": 756000,
+      "2025": 692520,
+      "2000": 4000000
+    },
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 3416000,
+    "liabilities": 0,
     "education": "B.A"
   },
   "JSuriyaMuthu": {
     "candidate": "JSuriyaMuthu",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9640052904",
-      "9551103650"
-    ],
+    "phones": [],
     "emails": [
-      "suriyamuthul974@gmail.com"
+      "ssuriyamuthul974@gmail.com"
     ],
     "pan_ids": [
       "BYYPJ9984R"
@@ -133,20 +139,16 @@
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 24000,
+    "liabilities": 0,
     "education": "SSLC"
   },
   "KajaMaideen": {
     "candidate": "KajaMaideen",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "7140506735",
-      "8189957868",
-      "9920047007"
-    ],
+    "phones": [],
     "emails": [
-      "kajamaideenl991@gmail.com"
+      "kajamaideenl99@gmail.com"
     ],
     "pan_ids": [
       "GGSPK5861D"
@@ -154,9 +156,9 @@
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
-    "immovable_assets": 646000,
-    "liabilities": 646000,
-    "education": "Unknown"
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.A"
   },
   "KElumalai": {
     "candidate": "KElumalai",
@@ -164,7 +166,7 @@
     "constituency": "KOLATHUR",
     "phones": [
       "9442414692",
-      "8248909450"
+      "6060006006"
     ],
     "emails": [],
     "pan_ids": [
@@ -173,8 +175,8 @@
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
-    "immovable_assets": 1606,
-    "liabilities": 1000000,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "M.A"
   },
   "KPanneerSelvam": {
@@ -182,7 +184,8 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9884012216"
+      "9884012216",
+      "8281339985"
     ],
     "emails": [
       "261986@gmail.com"
@@ -200,26 +203,29 @@
     "party": "DMK",
     "constituency": "KOLATHUR",
     "phones": [
-      "9480575761"
+      "6060060060",
+      "9840156466",
+      "9486575701",
+      "6060060600"
     ],
     "emails": [
       "mkstalin@dmk.in"
     ],
     "pan_ids": [
-      "ABDPS9993A",
-      "AFWPD6115J"
+      "AFWPD6115J",
+      "ABDPS9993A"
     ],
     "income_tax": {
-      "2020": 510370,
+      "2020": 510750,
       "2021": 510370,
+      "2022": 530570,
       "2023": 539430,
-      "2022": 539430,
-      "2024": 583740
+      "2024": 533740
     },
     "criminal_cases": 0,
-    "movable_assets": 3094260,
-    "immovable_assets": 33053486,
-    "liabilities": 29602874,
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "Unknown"
   },
   "MPoornima": {
@@ -234,11 +240,19 @@
       "poornima.mba@gmail.com"
     ],
     "pan_ids": [
+      "ATLPP5905D",
       "AOYPG4824N"
     ],
     "income_tax": {
-      "2028": 2804,
-      "2024": 306320
+      "2023": 500000,
+      "2028": 2104202,
+      "2024": 306320,
+      "2011": 132825,
+      "2019": 243000,
+      "2015": 1118800,
+      "2014": 80000,
+      "2005": 295000,
+      "2042": 2020389
     },
     "criminal_cases": 0,
     "movable_assets": 17074500,
@@ -251,39 +265,40 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9884998975",
-      "8663010000"
+      "6661660016",
+      "8663010000",
+      "6066066060"
     ],
     "emails": [
       "advocatemrajesh@gmail.com"
     ],
-    "pan_ids": [],
+    "pan_ids": [
+      "ATSPR0558H"
+    ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 16841,
-    "immovable_assets": 16841,
-    "liabilities": 16841,
-    "education": "Unknown"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.A"
   },
   "MSuresh": {
     "candidate": "MSuresh",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9940570474"
-    ],
+    "phones": [],
     "emails": [
-      "sureshplayl08@gmail.com"
+      "sureshplayl08@gmail.comm"
     ],
     "pan_ids": [
       "CSWPS5203F"
     ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 21042,
-    "immovable_assets": 610000,
-    "liabilities": 35000,
-    "education": "Unknown"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.A"
   },
   "NandaKumar": {
     "candidate": "NandaKumar",
@@ -291,7 +306,8 @@
     "constituency": "KOLATHUR",
     "phones": [
       "9360944503",
-      "9841455409"
+      "9841455409",
+      "8280162542"
     ],
     "emails": [
       "nandakumarchennaicatering@gmail.com"
@@ -317,31 +333,30 @@
     "pan_ids": [
       "BPCPS9875K",
       "AAKPO0185C",
-      "RCFPS5864G",
-      "RCFPS5863B"
+      "RCFPS5863B",
+      "RCFPS5864G"
     ],
     "income_tax": {
-      "2026": 329500
+      "2026": 260501202,
+      "2025": 329500
     },
     "criminal_cases": 0,
-    "movable_assets": 1595000,
-    "immovable_assets": 1595000,
-    "liabilities": 9044440,
+    "movable_assets": 9044440,
+    "immovable_assets": 9044440,
+    "liabilities": 9076100,
     "education": "DIPLOMA"
   },
   "PMilany": {
     "candidate": "PMilany",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9500691041"
-    ],
+    "phones": [],
     "emails": [
-      "1@gmail.com"
+      "miganyponnuram81@gmail.com"
     ],
     "pan_ids": [
-      "AOTPM5713K",
-      "DEMPC5934N"
+      "DEMPC5934N",
+      "AOTPM5713K"
     ],
     "income_tax": {},
     "criminal_cases": 0,
@@ -355,29 +370,27 @@
     "party": "AIADMK",
     "constituency": "KOLATHUR",
     "phones": [
-      "6470625795",
-      "9940225531",
       "8279622696",
-      "8001611629"
+      "8279581045",
+      "9940225531"
     ],
     "emails": [
       "santhanakrishnan70874@gmail.com",
       "santhanakrishnan080774@gmail.com"
     ],
     "pan_ids": [
-      "LNFPS7071E",
-      "AWAPL6650M"
+      "AWAPL6650M",
+      "LNFPS7071E"
     ],
     "income_tax": {
-      "2020": 496690,
-      "2021": 498750,
+      "2021": 331040,
       "2022": 498750,
       "2024": 497810
     },
     "criminal_cases": 0,
     "movable_assets": 3844169,
     "immovable_assets": 3844169,
-    "liabilities": 12428000,
+    "liabilities": 6200000,
     "education": "SSLC"
   },
   "RajaG": {
@@ -393,9 +406,9 @@
     ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
-    "liabilities": 2226000,
+    "movable_assets": 1286000,
+    "immovable_assets": 1286000,
+    "liabilities": 1286000,
     "education": "SSLC"
   },
   "RBalaji": {
@@ -403,7 +416,7 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "8870937077"
+      "6066086060"
     ],
     "emails": [],
     "pan_ids": [
@@ -414,44 +427,41 @@
     "movable_assets": 0,
     "immovable_assets": 0,
     "liabilities": 0,
-    "education": "Unknown"
+    "education": "LLB"
   },
   "RMahesh": {
     "candidate": "RMahesh",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
+      "9840052302",
       "9940016640"
     ],
     "emails": [
-      "mgsh2l1@gmail.com"
+      "mgsh2l@gmail.com"
     ],
     "pan_ids": [
       "CISPM2764B"
     ],
-    "income_tax": {
-      "2023": 4202
-    },
+    "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 4202,
-    "immovable_assets": 4202,
-    "liabilities": 300000,
-    "education": "Unknown"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.A"
   },
   "RRajGuru": {
     "candidate": "RRajGuru",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "7871468361"
-    ],
+    "phones": [],
     "emails": [],
     "pan_ids": [],
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 715189,
+    "liabilities": 0,
     "education": "B.A"
   },
   "RRavikumar": {
@@ -459,11 +469,11 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "7675701644",
-      "7397477013"
+      "7397477013",
+      "7675701644"
     ],
     "emails": [
-      "Shivaravi769@gmail.com"
+      "Shiaravi769@gmai.cm"
     ],
     "pan_ids": [],
     "income_tax": {},
@@ -471,7 +481,7 @@
     "movable_assets": 0,
     "immovable_assets": 0,
     "liabilities": 0,
-    "education": "HSC"
+    "education": "B.A"
   },
   "RSenthilKumar": {
     "candidate": "RSenthilKumar",
@@ -479,9 +489,9 @@
     "constituency": "KOLATHUR",
     "phones": [
       "9444172443",
-      "9941824155",
-      "9962187377",
-      "9840202777"
+      "9862197377",
+      "9940202777",
+      "9941824155"
     ],
     "emails": [
       "advocate.rsenthilkumar@gmail.com"
@@ -491,65 +501,65 @@
       "AQFPC9980N"
     ],
     "income_tax": {
-      "2024": 662140,
-      "2026": 11000
+      "2024": 662140
     },
     "criminal_cases": 0,
-    "movable_assets": 432490,
+    "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 432490,
+    "liabilities": 0,
     "education": "SSLC"
   },
   "SBalachandar": {
     "candidate": "SBalachandar",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9003576394"
-    ],
+    "phones": [],
     "emails": [
-      "bala061176@gmail.com"
+      "bala06176@gmail.com"
     ],
-    "pan_ids": [],
+    "pan_ids": [
+      "DULPS7800C"
+    ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 485000,
-    "immovable_assets": 480000,
-    "liabilities": 480000,
-    "education": "Unknown"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "LAW"
   },
   "SelviSteffiVM": {
     "candidate": "SelviSteffiVM",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "7358614442"
-    ],
+    "phones": [],
     "emails": [
       "steffi.meegal612@gmail.com"
     ],
     "pan_ids": [
-      "JMNPF1804N"
+      "JMNPF1804N",
+      "JMNPS1804N"
     ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 500000,
-    "immovable_assets": 500000,
-    "liabilities": 500000,
-    "education": "LLB"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.A"
   },
   "Sivagnanasam": {
     "candidate": "Sivagnanasam",
     "party": "DMSK",
     "constituency": "KOLATHUR",
-    "phones": [],
+    "phones": [
+      "6606076061"
+    ],
     "emails": [],
     "pan_ids": [],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 85209,
-    "immovable_assets": 85209,
-    "liabilities": 85209,
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "LAW"
   },
   "SoundaraPandianLuderSeth": {
@@ -557,64 +567,64 @@
     "party": "NTK",
     "constituency": "KOLATHUR",
     "phones": [
-      "9391006736",
       "9150008880"
     ],
     "emails": [
-      "yankacure@gmail.com",
-      "luderefx@gmail.com",
-      "kumaresanadvocate29@gmail.com"
+      "yankacure@gmail.com-FB",
+      "kumaresanadvocate29@gmail.com",
+      "luderefx@gmail.com"
     ],
     "pan_ids": [],
-    "income_tax": {},
+    "income_tax": {
+      "2019": 740000
+    },
     "criminal_cases": 0,
-    "movable_assets": 2913137,
-    "immovable_assets": 1800000,
-    "liabilities": 2913137,
-    "education": "MBA"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "B.SC"
   },
   "SSharan": {
     "candidate": "SSharan",
     "party": "Indep",
     "constituency": "KOLATHUR",
-    "phones": [
-      "7094636927"
-    ],
+    "phones": [],
     "emails": [],
-    "pan_ids": [],
+    "pan_ids": [
+      "MIIPS9445P"
+    ],
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 250000,
-    "education": "Unknown"
+    "liabilities": 0,
+    "education": "LAW"
   },
   "Subashini": {
     "candidate": "Subashini",
     "party": "BSP",
     "constituency": "KOLATHUR",
-    "phones": [
-      "9176098300"
-    ],
+    "phones": [],
     "emails": [
-      "swjashini@gmail.com",
-      "subijagan@gmail.com"
+      "subijagan@gmail.com",
+      "sujashini@gmail.com"
     ],
-    "pan_ids": [],
+    "pan_ids": [
+      "FSGPS9410B",
+      "AKMPJ9208K"
+    ],
     "income_tax": {},
     "criminal_cases": 0,
-    "movable_assets": 843677,
-    "immovable_assets": 1116000,
-    "liabilities": 843677,
-    "education": "B.E"
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
+    "education": "LLB"
   },
   "SYSyedYusuf": {
     "candidate": "SYSyedYusuf",
     "party": "RPOI",
     "constituency": "KOLATHUR",
-    "phones": [
-      "7299496216"
-    ],
+    "phones": [],
     "emails": [],
     "pan_ids": [
       "EXLPS3939A"
@@ -622,8 +632,8 @@
     "income_tax": {},
     "criminal_cases": 0,
     "movable_assets": 0,
-    "immovable_assets": 41850,
-    "liabilities": 18000,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "B.A"
   },
   "VASudhakar": {
@@ -649,17 +659,22 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9380810181"
+      "9840052967"
     ],
-    "emails": [],
+    "emails": [
+      "vigirdhanl972@gmail.com"
+    ],
     "pan_ids": [
+      "DVIPK5986F",
       "APRPM5282J"
     ],
-    "income_tax": {},
+    "income_tax": {
+      "2019": 199800
+    },
     "criminal_cases": 0,
-    "movable_assets": 199800,
-    "immovable_assets": 199800,
-    "liabilities": 199800,
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "SSLC"
   },
   "VNareshBabu": {
@@ -667,20 +682,21 @@
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9941441147",
       "8027101100"
     ],
     "emails": [
-      "Iplassociates2023@gmail.com"
+      "slplassociates2023@gmail.com"
     ],
     "pan_ids": [
       "BBIPN5497C"
     ],
-    "income_tax": {},
+    "income_tax": {
+      "2024": 234000
+    },
     "criminal_cases": 0,
-    "movable_assets": 602500,
-    "immovable_assets": 602500,
-    "liabilities": 602500,
+    "movable_assets": 0,
+    "immovable_assets": 0,
+    "liabilities": 0,
     "education": "B.E"
   },
   "VSBabu": {
@@ -688,24 +704,20 @@
     "party": "TVK",
     "constituency": "KOLATHUR",
     "phones": [
-      "9444353122",
-      "9540052964"
+      "9840052962"
     ],
     "emails": [],
     "pan_ids": [
       "AKXPB7820J"
     ],
     "income_tax": {
-      "2020": 4005,
-      "2021": 52226,
-      "2022": 448220,
-      "2023": 448220,
-      "2024": 449320
+      "2024": 454730,
+      "2007": 138600
     },
     "criminal_cases": 0,
     "movable_assets": 0,
     "immovable_assets": 0,
-    "liabilities": 32988000,
+    "liabilities": 0,
     "education": "B.A"
   }
 }

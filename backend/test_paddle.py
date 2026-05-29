@@ -1,96 +1,38 @@
-# ==========================================
-# FILE: backend/test_paddle.py
-# ==========================================
-
-from paddleocr import PaddleOCR
 from pdf2image import convert_from_path
+from paddleocr import PaddleOCR
 
-# ==========================================
-# POPPLER PATH
-# ==========================================
-
-POPPLER_PATH = (
-    r"C:\poppler\Library\bin"
-)
-
-# ==========================================
-# PDF FILE
-# ==========================================
-
-PDF_PATH = (
-    r"data\KOLATHUR\MKStalin-DMK-1.pdf"
-)
-
-# ==========================================
-# LOAD OCR
-# ==========================================
-
-ocr = PaddleOCR(
-
-    use_textline_orientation=True,
-
-    lang="en"
-)
-
-# ==========================================
-# PDF TO IMAGES
-# ==========================================
-
-print(
-    "\nConverting PDF pages..."
-)
-
+# Convert page 16
 images = convert_from_path(
-
-    PDF_PATH,
-
-    dpi=300,
-
-    poppler_path=POPPLER_PATH
+    r"test_data\MKStalin-DMK-1.pdf",
+    first_page=16,
+    last_page=16
 )
 
-print(
-    f"Converted {len(images)} pages"
+images[0].save("page16.png")
+
+# Tamil OCR
+ocr = PaddleOCR(
+    lang="ta",
+    use_angle_cls=False
 )
-
-# ==========================================
-# TEST FIRST PAGE
-# ==========================================
-
-first_page = images[0]
-
-TEMP_IMAGE = "temp_page.jpg"
-
-first_page.save(
-    TEMP_IMAGE
-)
-
-print(
-    "\nRunning PaddleOCR...\n"
-)
-
-# ==========================================
-# OCR
-# ==========================================
 
 result = ocr.ocr(
-
-    TEMP_IMAGE
+    "page16.png",
+    cls=False
 )
 
-# ==========================================
-# PRINT RESULTS
-# ==========================================
+# Save output
+with open(
+    "page16_ocr.txt",
+    "w",
+    encoding="utf-8"
+) as f:
 
-for line in result[0]:
+    for line in result[0]:
 
-    text = line[1][0]
+        text = line[1][0]
 
-    confidence = line[1][1]
+        f.write(text)
+        f.write("\n")
 
-    print(
-
-        f"{text}"
-
-        f"  | confidence={confidence:.2f}"
-    )
+print("Saved OCR output to page16_ocr.txt")

@@ -54,6 +54,7 @@ def get_section(
 
         lower = text.lower()
 
+
         for keyword in keywords:
 
             if keyword.lower() in lower:
@@ -369,6 +370,7 @@ def extract_liabilities(
 
     return 0
 
+
 # ==========================================
 # MAIN PARSER
 # ==========================================
@@ -474,8 +476,11 @@ def parse_candidate_pages(
     # EXTRACTION
     # ======================================
 
+    # Use full_text instead of income_section
+    # because OCR often misses the section heading
+
     income_tax = extract_income_tax(
-        income_section
+        full_text
     )
 
     criminal_cases = (
