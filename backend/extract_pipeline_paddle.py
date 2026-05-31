@@ -14,7 +14,7 @@ from paddleocr import PaddleOCR
 
 PDF_FOLDER = r"data\KOLATHUR"
 
-OUTPUT_JSON = "extracted_pages_paddle.json"
+OUTPUT_JSON = "extracted_pages_paddle_tamil.json"
 
 POPPLER_PATH = r"C:\poppler\Library\bin"
 
@@ -23,8 +23,8 @@ POPPLER_PATH = r"C:\poppler\Library\bin"
 # ==========================================
 
 ocr = PaddleOCR(
-    use_angle_cls=False,
-    lang="en"
+    lang="ta",
+    use_angle_cls=False
 )
 
 # ==========================================
