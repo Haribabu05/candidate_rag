@@ -9,15 +9,27 @@
     ],
     "pan_ids": [
       "CHUPJ9056N",
-      "DBSPA9549A",
-      "CHUPI9056N"
+      "CHUPI9056N",
+      "DBSPA9549A"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "ALNareshKumar": {
     "candidate": "ALNareshKumar",
@@ -32,14 +44,26 @@
     "pan_ids": [
       "AXQPN3659R"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2022": 912202
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "ARaji": {
     "candidate": "ARaji",
@@ -50,15 +74,27 @@
     ],
     "emails": [],
     "pan_ids": [
-      "ALPPA8041H",
-      "BESPA8733B"
+      "BESPA8733B",
+      "ALPPA8041H"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "ArulDossA": {
     "candidate": "ArulDossA",
@@ -72,12 +108,24 @@
       "kewintravels@gmail.com"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 261600,
-    "immovable_assets": 261600,
+    "assets": {
+      "movable": 261600,
+      "immovable": 261600,
+      "total": 523200
+    },
     "liabilities": 261600,
-    "education": "DIPLOMA"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "ERaamadasan": {
     "candidate": "ERaamadasan",
@@ -88,14 +136,26 @@
     ],
     "emails": [],
     "pan_ids": [],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2025": 46800
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "FarmerJayaramanSKJ": {
     "candidate": "FarmerJayaramanSKJ",
@@ -109,20 +169,32 @@
     ],
     "pan_ids": [
       "BAIPV8625D",
-      "BQIPT1932K",
       "JBQPT1932K",
-      "CLPTJ4850B"
+      "CLPTJ4850B",
+      "BQIPT1932K"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2024": 756000,
       "2025": 692520,
       "2000": 4000000
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "JSuriyaMuthu": {
     "candidate": "JSuriyaMuthu",
@@ -135,12 +207,24 @@
     "pan_ids": [
       "BYYPJ9984R"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "KajaMaideen": {
     "candidate": "KajaMaideen",
@@ -153,12 +237,24 @@
     "pan_ids": [
       "GGSPK5861D"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "KElumalai": {
     "candidate": "KElumalai",
@@ -172,39 +268,63 @@
     "pan_ids": [
       "AAIPE8016G"
     ],
+    "education": {
+      "degree": "M.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "M.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "KPanneerSelvam": {
     "candidate": "KPanneerSelvam",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9884012216",
-      "8281339985"
+      "8281339985",
+      "9884012216"
     ],
     "emails": [
       "261986@gmail.com"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 1162800,
-    "immovable_assets": 1162800,
+    "assets": {
+      "movable": 1162800,
+      "immovable": 1162800,
+      "total": 2325600
+    },
     "liabilities": 1162800,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "MKStalin": {
     "candidate": "MKStalin",
     "party": "DMK",
     "constituency": "KOLATHUR",
     "phones": [
-      "6060060060",
       "9840156466",
+      "6060060060",
       "9486575701",
       "6060060600"
     ],
@@ -212,9 +332,16 @@
       "mkstalin@dmk.in"
     ],
     "pan_ids": [
-      "AFWPD6115J",
-      "ABDPS9993A"
+      "ABDPS9993A",
+      "AFWPD6115J"
     ],
+    "education": {
+      "degree": "BCA"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2020": 510750,
       "2021": 510370,
@@ -222,11 +349,16 @@
       "2023": 539430,
       "2024": 533740
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "Unknown"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "MPoornima": {
     "candidate": "MPoornima",
@@ -240,9 +372,16 @@
       "poornima.mba@gmail.com"
     ],
     "pan_ids": [
-      "ATLPP5905D",
-      "AOYPG4824N"
+      "AOYPG4824N",
+      "ATLPP5905D"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2023": 500000,
       "2028": 2104202,
@@ -254,19 +393,24 @@
       "2005": 295000,
       "2042": 2020389
     },
-    "criminal_cases": 0,
-    "movable_assets": 17074500,
-    "immovable_assets": 17074500,
+    "assets": {
+      "movable": 17074500,
+      "immovable": 17074500,
+      "total": 34149000
+    },
     "liabilities": 17074500,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "MRajeshkumar": {
     "candidate": "MRajeshkumar",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "6661660016",
       "8663010000",
+      "6661660016",
       "6066066060"
     ],
     "emails": [
@@ -275,12 +419,24 @@
     "pan_ids": [
       "ATSPR0558H"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "MSuresh": {
     "candidate": "MSuresh",
@@ -293,32 +449,56 @@
     "pan_ids": [
       "CSWPS5203F"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "NandaKumar": {
     "candidate": "NandaKumar",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9360944503",
       "9841455409",
-      "8280162542"
+      "8280162542",
+      "9360944503"
     ],
     "emails": [
       "nandakumarchennaicatering@gmail.com"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "ITI"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 353000,
-    "immovable_assets": 353000,
+    "assets": {
+      "movable": 353000,
+      "immovable": 353000,
+      "total": 706000
+    },
     "liabilities": 353000,
-    "education": "DIPLOMA"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "Oormila": {
     "candidate": "Oormila",
@@ -331,20 +511,32 @@
       "valluvan@gmail.com"
     ],
     "pan_ids": [
-      "BPCPS9875K",
+      "RCFPS5864G",
       "AAKPO0185C",
-      "RCFPS5863B",
-      "RCFPS5864G"
+      "BPCPS9875K",
+      "RCFPS5863B"
     ],
+    "education": {
+      "degree": "ITI"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2026": 260501202,
       "2025": 329500
     },
-    "criminal_cases": 0,
-    "movable_assets": 9044440,
-    "immovable_assets": 9044440,
+    "assets": {
+      "movable": 9044440,
+      "immovable": 9044440,
+      "total": 18088880
+    },
     "liabilities": 9076100,
-    "education": "DIPLOMA"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "PMilany": {
     "candidate": "PMilany",
@@ -358,40 +550,64 @@
       "DEMPC5934N",
       "AOTPM5713K"
     ],
+    "education": {
+      "degree": "ITI"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "MBA"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "PSanthanaKrishnan": {
     "candidate": "PSanthanaKrishnan",
     "party": "AIADMK",
     "constituency": "KOLATHUR",
     "phones": [
-      "8279622696",
       "8279581045",
-      "9940225531"
+      "9940225531",
+      "8279622696"
     ],
     "emails": [
-      "santhanakrishnan70874@gmail.com",
-      "santhanakrishnan080774@gmail.com"
+      "santhanakrishnan080774@gmail.com",
+      "santhanakrishnan70874@gmail.com"
     ],
     "pan_ids": [
       "AWAPL6650M",
       "LNFPS7071E"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2021": 331040,
       "2022": 498750,
       "2024": 497810
     },
-    "criminal_cases": 0,
-    "movable_assets": 3844169,
-    "immovable_assets": 3844169,
+    "assets": {
+      "movable": 3844169,
+      "immovable": 3844169,
+      "total": 7688338
+    },
     "liabilities": 6200000,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RajaG": {
     "candidate": "RajaG",
@@ -404,12 +620,24 @@
     "pan_ids": [
       "AHBPR7242K"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 1286000,
-    "immovable_assets": 1286000,
+    "assets": {
+      "movable": 1286000,
+      "immovable": 1286000,
+      "total": 2572000
+    },
     "liabilities": 1286000,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RBalaji": {
     "candidate": "RBalaji",
@@ -422,20 +650,32 @@
     "pan_ids": [
       "EZRPR3423L"
     ],
+    "education": {
+      "degree": "B.Com"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "LLB"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RMahesh": {
     "candidate": "RMahesh",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "9840052302",
-      "9940016640"
+      "9940016640",
+      "9840052302"
     ],
     "emails": [
       "mgsh2l@gmail.com"
@@ -443,12 +683,24 @@
     "pan_ids": [
       "CISPM2764B"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RRajGuru": {
     "candidate": "RRajGuru",
@@ -457,57 +709,93 @@
     "phones": [],
     "emails": [],
     "pan_ids": [],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RRavikumar": {
     "candidate": "RRavikumar",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
-      "7397477013",
-      "7675701644"
+      "7675701644",
+      "7397477013"
     ],
     "emails": [
       "Shiaravi769@gmai.cm"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "RSenthilKumar": {
     "candidate": "RSenthilKumar",
     "party": "Indep",
     "constituency": "KOLATHUR",
     "phones": [
+      "9941824155",
       "9444172443",
       "9862197377",
-      "9940202777",
-      "9941824155"
+      "9940202777"
     ],
     "emails": [
       "advocate.rsenthilkumar@gmail.com"
     ],
     "pan_ids": [
-      "ENFPS6435F",
-      "AQFPC9980N"
+      "AQFPC9980N",
+      "ENFPS6435F"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2024": 662140
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "SBalachandar": {
     "candidate": "SBalachandar",
@@ -520,12 +808,24 @@
     "pan_ids": [
       "DULPS7800C"
     ],
+    "education": {
+      "degree": "B.Com"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "LAW"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "SelviSteffiVM": {
     "candidate": "SelviSteffiVM",
@@ -539,12 +839,24 @@
       "JMNPF1804N",
       "JMNPS1804N"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "Sivagnanasam": {
     "candidate": "Sivagnanasam",
@@ -555,12 +867,24 @@
     ],
     "emails": [],
     "pan_ids": [],
+    "education": {
+      "degree": "BCA"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "LAW"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "SoundaraPandianLuderSeth": {
     "candidate": "SoundaraPandianLuderSeth",
@@ -570,19 +894,31 @@
       "9150008880"
     ],
     "emails": [
+      "luderefx@gmail.com",
       "yankacure@gmail.com-FB",
-      "kumaresanadvocate29@gmail.com",
-      "luderefx@gmail.com"
+      "kumaresanadvocate29@gmail.com"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "B.Sc"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2019": 740000
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.SC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "SSharan": {
     "candidate": "SSharan",
@@ -593,12 +929,24 @@
     "pan_ids": [
       "MIIPS9445P"
     ],
+    "education": {
+      "degree": "B.Com"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "LAW"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "Subashini": {
     "candidate": "Subashini",
@@ -606,19 +954,31 @@
     "constituency": "KOLATHUR",
     "phones": [],
     "emails": [
-      "subijagan@gmail.com",
-      "sujashini@gmail.com"
+      "sujashini@gmail.com",
+      "subijagan@gmail.com"
     ],
     "pan_ids": [
-      "FSGPS9410B",
-      "AKMPJ9208K"
+      "AKMPJ9208K",
+      "FSGPS9410B"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "LLB"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "SYSyedYusuf": {
     "candidate": "SYSyedYusuf",
@@ -629,12 +989,24 @@
     "pan_ids": [
       "EXLPS3939A"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "VASudhakar": {
     "candidate": "VASudhakar",
@@ -647,12 +1019,24 @@
       "ayansudhakar333@gmail.com"
     ],
     "pan_ids": [],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {},
-    "criminal_cases": 0,
-    "movable_assets": 345400,
-    "immovable_assets": 345400,
+    "assets": {
+      "movable": 345400,
+      "immovable": 345400,
+      "total": 690800
+    },
     "liabilities": 345400,
-    "education": "DIPLOMA"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "Vigirdhan": {
     "candidate": "Vigirdhan",
@@ -665,17 +1049,29 @@
       "vigirdhanl972@gmail.com"
     ],
     "pan_ids": [
-      "DVIPK5986F",
-      "APRPM5282J"
+      "APRPM5282J",
+      "DVIPK5986F"
     ],
+    "education": {
+      "degree": "SSLC"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2019": 199800
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "SSLC"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "VNareshBabu": {
     "candidate": "VNareshBabu",
@@ -690,14 +1086,26 @@
     "pan_ids": [
       "BBIPN5497C"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2024": 234000
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.E"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   },
   "VSBabu": {
     "candidate": "VSBabu",
@@ -710,14 +1118,26 @@
     "pan_ids": [
       "AKXPB7820J"
     ],
+    "education": {
+      "degree": "B.A"
+    },
+    "criminal_cases": {
+      "pending": 0,
+      "convicted": 0
+    },
     "income_tax": {
       "2024": 454730,
       "2007": 138600
     },
-    "criminal_cases": 0,
-    "movable_assets": 0,
-    "immovable_assets": 0,
+    "assets": {
+      "movable": 0,
+      "immovable": 0,
+      "total": 0
+    },
     "liabilities": 0,
-    "education": "B.A"
+    "occupation": "",
+    "spouse": "",
+    "dependents": 0,
+    "source_pdf": ""
   }
 }

@@ -111,77 +111,62 @@ def extract_emails(text):
 # EDUCATION EXTRACTION
 # ==========================================
 
-def extract_education(
-    pages
-):
+EDUCATION_PATTERNS = {
 
-    education_keywords = [
+    # School
+    "sslc": "SSLC",
+    "10th": "SSLC",
 
-        "sslc",
-        "hsc",
-        "graduate",
-        "post graduate",
-        "mba",
-        "b.e",
-        "b.tech",
-        "m.e",
-        "m.tech",
-        "b.sc",
-        "m.sc",
-        "b.a",
-        "m.a",
-        "phd",
-        "doctor",
-        "diploma",
-        "llb",
-        "law"
-    ]
+    "hsc": "HSC",
+    "12th": "HSC",
 
-    # ======================================
-    # SEARCH PAGE BY PAGE
-    # ======================================
+    # ITI / Diploma
+    "iti": "ITI",
+    "diploma": "Diploma",
 
-    for page in pages:
+    # Undergraduate
+    "b.a": "B.A",
+    "bcom": "B.Com",
+    "b.com": "B.Com",
 
-        text = page["text"]
+    "bsc": "B.Sc",
+    "b.sc": "B.Sc",
 
-        lower = text.lower()
+    "bca": "BCA",
+    "bba": "BBA",
 
-        # ==================================
-        # LOOK FOR EDUCATION SECTION
-        # ==================================
+    "b.e": "B.E",
+    "be ": "B.E",
 
-        if (
+    "b.tech": "B.Tech",
+    "btech": "B.Tech",
 
-            "educational qualification"
-            in lower
+    "llb": "LL.B",
 
-            or
+    # Postgraduate
+    "m.a": "M.A",
+    "mcom": "M.Com",
+    "m.com": "M.Com",
 
-            "qualification"
-            in lower
+    "msc": "M.Sc",
+    "m.sc": "M.Sc",
 
-            or
+    "mba": "MBA",
+    "mca": "MCA",
 
-            "education"
-            in lower
-        ):
+    "m.e": "M.E",
 
-            lines = text.splitlines()
+    "mtech": "M.Tech",
+    "m.tech": "M.Tech",
 
-            for line in lines:
+    "m.phil": "M.Phil",
+    "mphil": "M.Phil",
 
-                clean = line.lower()
+    "ph.d": "Ph.D",
+    "phd": "Ph.D"
+}
 
-                for keyword in education_keywords:
-
-                    if keyword in clean:
-
-                        return keyword.upper()
-
-    # ======================================
-    # GLOBAL FALLBACK SEARCH
-    # ======================================
+def extract_education(pages):
 
     combined = ""
 
@@ -192,13 +177,33 @@ def extract_education(
             + page["text"]
         )
 
-    combined = combined.lower()
+    lower = combined.lower()
 
-    for keyword in education_keywords:
+    # Tamil special cases
 
-        if keyword in combined:
+    if "அரசியல்அறிவியல்" in combined:
+        return "B.A. Political Science"
 
-            return keyword.upper()
+    if (
+        "இளங்கலை" in combined
+        or
+        "இளங்கைல" in combined
+    ):
+        return "Bachelor Degree"
+
+    if "முதுகலை" in combined:
+        return "Master Degree"
+
+    if "முனைவர்" in combined:
+        return "Ph.D"
+
+    # English patterns
+
+    for pattern, degree in EDUCATION_PATTERNS.items():
+
+        if pattern in lower:
+
+            return degree
 
     return "Unknown"
 
@@ -375,6 +380,42 @@ def extract_liabilities(
 # MAIN PARSER
 # ==========================================
 
+def extract_age(text):
+
+    age_match = re.search(
+        r'Age[:\s]+(\d{2})',
+        text,
+        re.I
+    )
+
+    if age_match:
+        return int(age_match.group(1))
+
+    return None
+
+
+def extract_gender(text):
+
+    lower = text.lower()
+
+    if "male" in lower:
+        return "Male"
+
+    if "female" in lower:
+        return "Female"
+
+    return None
+
+
+def extract_occupation(text):
+
+    return ""
+
+
+def extract_spouse(text):
+
+    return ""
+
 def parse_candidate_pages(
     candidate_name,
     pages
@@ -396,6 +437,53 @@ def parse_candidate_pages(
     constituency = (
         metadata["constituency"]
     )
+
+    # DEBUGGING
+
+    if candidate_name == "SSharan":
+
+        with open(
+            "debug_SSharan.txt",
+            "w",
+            encoding="utf-8"
+        ) as f:
+
+            f.write(full_text)
+
+    print("Processing:", candidate_name)
+
+    if "Aathithya" in candidate_name:
+
+        print("DEBUG HIT:", candidate_name)
+
+        with open(
+            "debug_aathithya.txt",
+            "w",
+            encoding="utf-8"
+        ) as f:
+
+            f.write(full_text)
+
+        print("File written")
+    # ======================================
+    # BASIC INFO
+    # ======================================
+
+    age = extract_age(
+        full_text
+    )
+
+    gender = extract_gender(
+        full_text
+    )
+
+    occupation = extract_occupation(
+        full_text
+    )
+
+    spouse = extract_spouse(
+        full_text
+    )   
 
     # ======================================
     # CONTACT
@@ -517,7 +605,7 @@ def parse_candidate_pages(
 
     candidate_data = {
 
-        "candidate": candidate_name,
+         "candidate": candidate_name,
 
         "party": party,
 
@@ -529,17 +617,39 @@ def parse_candidate_pages(
 
         "pan_ids": pan_ids,
 
+        "education": {
+            "degree": education
+        },
+
+        "criminal_cases": {
+            "pending": criminal_cases,
+            "convicted": 0
+        },
+
         "income_tax": income_tax,
 
-        "criminal_cases": criminal_cases,
-
-        "movable_assets": movable_assets,
-
-        "immovable_assets": immovable_assets,
+        "assets": {
+            "movable": movable_assets,
+            "immovable": immovable_assets,
+            "total": (
+                movable_assets
+                +
+                immovable_assets
+            )
+        },
 
         "liabilities": liabilities,
 
-        "education": education
+        "occupation": "",
+
+        "spouse": "",
+
+        "dependents": 0,
+
+        "source_pdf": metadata.get(
+            "pdf_file",
+            ""
+    )
     }
 
     return candidate_data

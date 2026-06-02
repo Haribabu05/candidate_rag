@@ -56,6 +56,8 @@ collection = client.create_collection(
     "candidate_affidavits"
 )
 
+
+
 # ==========================================
 # TEXT SPLITTER
 # ==========================================
@@ -80,7 +82,7 @@ EMAIL_REGEX = (
 PHONE_REGEX = (
     r"\b\d{10}\b"
 )
-
+ 
 MONEY_REGEX = (
     r"\b\d{1,3}(?:,\d{2,3})+\b"
 )

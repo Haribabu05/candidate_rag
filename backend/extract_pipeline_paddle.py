@@ -12,7 +12,7 @@ from paddleocr import PaddleOCR
 # CONFIG
 # ==========================================
 
-PDF_FOLDER = r"data\KOLATHUR"
+PDF_FOLDER = r"data\KOLATHUR"  
 
 OUTPUT_JSON = "extracted_pages_paddle_tamil.json"
 
