@@ -1,7 +1,23 @@
 from flask import Flask,jsonify
 import json
 
+from flask_cors import CORS
+
+from flask import request
+from gemini_client import ask_gemini
+from intent_router import detect_intent
+
+with open(
+    "candidate_master_data.json",
+    "r",
+    encoding="utf-8"
+) as f:
+
+    candidate_data = json.load(f)
+
 app = Flask(__name__)
+
+CORS(app)
 
 with open(
     "candidate_master_data.json",
@@ -146,6 +162,65 @@ def stats():
                     for c in candidate_data.values()
                 )
             )
+    })
+
+
+#chat endpoint for gemini
+
+@app.route(
+    "/chat",
+    methods=["POST"]
+)
+def chat():
+
+    data = request.json
+
+    query = data["message"]
+
+    intent = detect_intent(
+        query
+    )
+
+    context = ""
+
+    # Candidate lookup
+    for candidate in candidate_data.values():
+
+        if (
+            candidate["candidate"].lower()
+            in query.lower()
+        ):
+
+            context = json.dumps(
+                candidate,
+                indent=2
+            )
+
+            break
+
+    prompt = f"""
+You are an Election Candidate Assistant.
+
+Candidate Context:
+
+{context}
+
+Question:
+
+{query}
+
+Answer using the context.
+"""
+
+    answer = ask_gemini(
+        prompt
+    )
+
+    return jsonify({
+
+        "answer": answer,
+
+        "intent": intent
     })
 
 if __name__ == '__main__':
