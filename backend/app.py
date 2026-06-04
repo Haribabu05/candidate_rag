@@ -7,6 +7,16 @@ from flask import request
 from gemini_client import ask_gemini
 from intent_router import detect_intent
 
+#stats of the candidate
+from query_engine import (
+    find_candidate,
+    find_by_party,
+    find_by_education,
+    find_by_constituency,
+    compare_candidates,
+    richest_candidates
+)
+
 with open(
     "candidate_master_data.json",
     "r",
@@ -146,26 +156,7 @@ def top_assets():
         results[:10]
     )
 
-#stats of the candidate
 
-@app.route('/stats')
-def stats():
-    return jsonify({
-
-        "total_candidates":
-            len(candidate_data),
-
-        "parties":
-            len(
-                set(
-                    c["party"]
-                    for c in candidate_data.values()
-                )
-            )
-    })
-
-
-#chat endpoint for gemini
 
 @app.route(
     "/chat",
@@ -173,54 +164,118 @@ def stats():
 )
 def chat():
 
-    data = request.json
+    data = request.get_json()
 
     query = data["message"]
 
-    intent = detect_intent(
-        query
-    )
+    intent = detect_intent(query)
 
-    context = ""
+    print("QUERY:", query)
+    print("INTENT:", intent)
 
-    # Candidate lookup
-    for candidate in candidate_data.values():
+    # ==========================
+    # CANDIDATE
+    # ==========================
 
-        if (
-            candidate["candidate"].lower()
-            in query.lower()
-        ):
+    if intent == "candidate":
 
-            context = json.dumps(
-                candidate,
-                indent=2
-            )
+        result = find_candidate(query)
 
-            break
+        if result:
 
-    prompt = f"""
-You are an Election Candidate Assistant.
+            return jsonify({
 
-Candidate Context:
+                "answer": result,
 
-{context}
+                "source": "candidate_db"
+            })
 
-Question:
+    # ==========================
+    # PARTY
+    # ==========================
 
-{query}
+    elif intent == "party":
 
-Answer using the context.
-"""
+        result = find_by_party(query)
 
-    answer = ask_gemini(
-        prompt
-    )
+        return jsonify({
+
+            "answer": result,
+
+            "source": "candidate_db"
+        })
+
+    # ==========================
+    # EDUCATION
+    # ==========================
+
+    elif intent == "education":
+
+        result = find_by_education(query)
+
+        return jsonify({
+
+            "answer": result,
+
+            "source": "candidate_db"
+        })
+
+    # ==========================
+    # CONSTITUENCY
+    # ==========================
+
+    elif intent == "constituency":
+
+        result = find_by_constituency(query)
+
+        return jsonify({
+
+            "answer": result,
+
+            "source": "candidate_db"
+        })
+
+    # ==========================
+    # COMPARE
+    # ==========================
+
+    elif intent == "compare":
+
+        result = compare_candidates(query)
+
+        return jsonify({
+
+            "answer": result,
+
+            "source": "candidate_db"
+        })
+
+    # ==========================
+    # SEMANTIC
+    # ==========================
+
+    elif intent == "semantic":
+
+        return jsonify({
+
+            "answer":
+                "ChromaDB not connected yet.",
+
+            "source":
+                "semantic"
+        })
+
+    # ==========================
+    # WEB / GEMINI
+    # ==========================
+
+    answer = ask_gemini(query)
 
     return jsonify({
 
         "answer": answer,
 
-        "intent": intent
+        "source": "gemini"
     })
 
 if __name__ == '__main__':
