@@ -50,7 +50,7 @@ DEGREE_KEYWORDS = {
 }
 
 with open(
-    "candidate_master_data.json",
+    r"C:\Users\bockb\YCDI\pdf_app\candidate_master_data.json",
     "r",
     encoding="utf-8"
 ) as f:

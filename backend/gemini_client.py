@@ -4,18 +4,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("GEMINI_API_KEY")
+
+print("API KEY FOUND:", api_key is not None)
+
+import os
+
+print(
+    "CURRENT DIR:",
+    os.getcwd()
 )
 
-model = genai.GenerativeModel(
-    "gemini-2.5-flash"
-)
+if api_key:
+    print("API KEY PREFIX:", api_key[:10])
+    print("FLASK KEY:", os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=api_key)
+
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 def ask_gemini(prompt):
-
-    response = model.generate_content(
-        prompt
-    )
-
+    response = model.generate_content(prompt)
     return response.text

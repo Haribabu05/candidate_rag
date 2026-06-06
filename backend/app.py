@@ -7,6 +7,13 @@ from flask import request
 from gemini_client import ask_gemini
 from intent_router import detect_intent
 
+from answer_formatter import (
+    format_candidate,
+    format_candidate_list,
+    format_comparison
+)
+
+
 #stats of the candidate
 from query_engine import (
     find_candidate,
@@ -96,7 +103,7 @@ def get_by_region(region):
 #=========================
 
 @app.route('/compare')
-def compare_candidates():
+def compare_candidates_api():
 
     from flask import request
 
@@ -185,7 +192,10 @@ def chat():
 
             return jsonify({
 
-                "answer": result,
+                "answer":
+                            format_candidate(
+                                result
+                            ),
 
                 "source": "candidate_db"
             })
@@ -200,7 +210,10 @@ def chat():
 
         return jsonify({
 
-            "answer": result,
+            "answer":
+                        format_candidate_list(
+                            result
+                        ),
 
             "source": "candidate_db"
         })
@@ -215,7 +228,9 @@ def chat():
 
         return jsonify({
 
-            "answer": result,
+            "answer":  format_candidate_list(
+            result
+        ),
 
             "source": "candidate_db"
         })
@@ -230,7 +245,9 @@ def chat():
 
         return jsonify({
 
-            "answer": result,
+            "answer":  format_candidate_list(
+                    result
+                    ),
 
             "source": "candidate_db"
         })
@@ -245,7 +262,12 @@ def chat():
 
         return jsonify({
 
-            "answer": result,
+            "answer":  format_comparison(
+
+            result["candidate1"],
+
+            result["candidate2"]
+            ),
 
             "source": "candidate_db"
         })
@@ -269,15 +291,32 @@ def chat():
     # WEB / GEMINI
     # ==========================
 
-    answer = ask_gemini(query)
+    # ==========================
+    # WEB / GEMINI
+    # ==========================
+
+    try:
+
+        answer = ask_gemini(query)
+
+    except Exception as e:
+
+        print("GEMINI ERROR:", e)
+
+        answer = (
+            "External AI service is currently unavailable."
+        )
 
     return jsonify({
 
-        "answer": answer,
+            "answer": answer,
 
-        "source": "gemini"
-    })
+            "source": "gemini"
+        })
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(
+        debug=True,
+        use_reloader=False
+        )
