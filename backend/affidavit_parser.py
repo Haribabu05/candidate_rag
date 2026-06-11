@@ -653,3 +653,5 @@ def parse_candidate_pages(
     }
 
     return candidate_data
+
+    #commit on 11/06/2024
