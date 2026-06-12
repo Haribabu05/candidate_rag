@@ -655,3 +655,4 @@ def parse_candidate_pages(
     return candidate_data
 
     #commit on 11/06/2024
+    # This file contains the main logic for parsing affidavit PDFs and extracting structured data about candidates. It uses regex patterns to find PAN IDs, phone numbers, emails, and financial information. The parser also attempts to determine education levels based on keywords. The final output is a JSON object with all the extracted information for each candidate.
