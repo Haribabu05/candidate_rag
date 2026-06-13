@@ -1,6 +1,6 @@
 import json
 import re
-
+from rapidfuzz import process
 
 DEGREE_KEYWORDS = {
 
@@ -62,35 +62,114 @@ with open(
 # FIND CANDIDATE
 # ==========================================
 
-from rapidfuzz import fuzz
+from rapidfuzz import process
+import re
+import json
 
-def find_candidate(query):
+
+with open(
+    "candidate_master_data.json",
+    "r",
+    encoding="utf-8"
+) as f:
+
+    candidate_data = json.load(f)
+
+
+# ====================================
+# CLEAN QUERY
+# ====================================
+
+def clean_query(query):
 
     q = query.lower()
 
-    best_candidate = None
-    best_score = 0
+    remove_phrases = [
+
+        "who is",
+        "tell me about",
+        "describe",
+        "details of",
+        "profile of",
+
+        "assets of",
+        "asset of",
+
+        "liabilities of",
+
+        "education of",
+
+        "email of",
+        "phone of",
+        "mobile of",
+
+        "candidate"
+    ]
+
+    for phrase in remove_phrases:
+
+        q = q.replace(
+            phrase,
+            ""
+        )
+
+    q = re.sub(
+        r"[^a-z0-9 ]",
+        " ",
+        q
+    )
+
+    q = " ".join(
+        q.split()
+    )
+
+    return q
+
+
+# ====================================
+# FIND CANDIDATE
+# ====================================
+
+def find_candidate(query):
+
+    cleaned_query = clean_query(
+        query
+    )
+
+    candidate_names = []
 
     for candidate in candidate_data.values():
 
-        name = candidate["candidate"].lower()
-
-        score = fuzz.partial_ratio(
-            name,
-            q
+        candidate_names.append(
+            candidate["candidate"]
         )
 
-        if score > best_score:
+    match = process.extractOne(
 
-            best_score = score
-            best_candidate = candidate
+        cleaned_query,
 
-    if best_score >= 80:
+        candidate_names,
 
-        return best_candidate
+        score_cutoff=75
+    )
+
+    if not match:
+
+        return None
+
+    matched_name = match[0]
+
+    for candidate in candidate_data.values():
+
+        if (
+            candidate["candidate"]
+            ==
+            matched_name
+        ):
+
+            return candidate
 
     return None
-
 
 # ==========================================
 # FIND BY PARTY
@@ -104,11 +183,14 @@ def find_by_party(query):
 
     for candidate in candidate_data.values():
 
-        party = candidate[
-            "party"
-        ].lower()
+        if (
 
-        if party in q:
+            candidate["party"]
+            .lower()
+
+            in q
+
+        ):
 
             results.append(
                 candidate
@@ -191,8 +273,6 @@ def find_by_constituency(query):
 
 def compare_candidates(query):
 
-    q = query.lower()
-
     matched = []
 
     for candidate in candidate_data.values():
@@ -201,7 +281,7 @@ def compare_candidates(query):
             "candidate"
         ].lower()
 
-        if name in q:
+        if name in query.lower():
 
             matched.append(
                 candidate
