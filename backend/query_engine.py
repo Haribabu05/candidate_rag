@@ -124,52 +124,63 @@ def clean_query(query):
     )
 
     return q
-
+ 
 
 # ====================================
 # FIND CANDIDATE
 # ====================================
 
-def find_candidate(query):
+from rapidfuzz import process
+import re
 
-    cleaned_query = clean_query(
-        query
+def normalize(text):
+
+    return re.sub(
+        r"[^a-z0-9]",
+        "",
+        text.lower()
     )
 
-    candidate_names = []
+
+def find_candidate(query):
+
+    cleaned_query = normalize(
+        clean_query(query)
+    )
+
+    candidate_lookup = {}
 
     for candidate in candidate_data.values():
 
-        candidate_names.append(
-            candidate["candidate"]
+        original_name = candidate["candidate"]
+
+        normalized_name = normalize(
+            original_name
         )
+
+        candidate_lookup[
+            normalized_name
+        ] = candidate
 
     match = process.extractOne(
 
         cleaned_query,
 
-        candidate_names,
+        candidate_lookup.keys(),
 
-        score_cutoff=75
+        score_cutoff=60
     )
+
+    print("QUERY =", cleaned_query)
+    print("MATCH =", match)
 
     if not match:
 
         return None
 
-    matched_name = match[0]
-
-    for candidate in candidate_data.values():
-
-        if (
-            candidate["candidate"]
-            ==
-            matched_name
-        ):
-
-            return candidate
-
-    return None
+    return candidate_lookup[
+        match[0]
+    ]
 
 # ==========================================
 # FIND BY PARTY
