@@ -184,7 +184,7 @@ def chat():
     # CANDIDATE
     # ==========================
 
-    if intent == "candidate":
+    if intent == "unknown":
 
         result = find_candidate(query)
 
@@ -260,16 +260,29 @@ def chat():
 
         result = compare_candidates(query)
 
+        if not result:
+
+            return jsonify({
+
+                "answer":
+                    "Please provide two valid candidate names.",
+
+                "source":
+                    "candidate_db"
+            })
+
         return jsonify({
 
-            "answer":  format_comparison(
+            "answer":
+                format_comparison(
 
-            result["candidate1"],
+                    result["candidate1"],
 
-            result["candidate2"]
-            ),
+                    result["candidate2"]
+                ),
 
-            "source": "candidate_db"
+            "source":
+                "candidate_db"
         })
 
     # ==========================
