@@ -21,7 +21,8 @@ from query_engine import (
     find_by_education,
     find_by_constituency,
     compare_candidates,
-    richest_candidates
+    richest_candidates,
+      find_by_gender
 )
 
 with open(
@@ -256,9 +257,39 @@ def chat():
     # COMPARE
     # ==========================
 
+
+    elif intent == "male":
+
+        result = find_by_gender("male")
+
+        return jsonify({
+
+            "answer":
+                format_candidate_list(result),
+
+            "source":
+                "candidate_db"
+        })
+
+
+    elif intent == "female":
+
+        result = find_by_gender("female")
+
+        return jsonify({
+
+            "answer":
+                format_candidate_list(result),
+
+            "source":
+                "candidate_db"
+        })
+
     elif intent == "compare":
 
-        result = compare_candidates(query)
+        result = compare_candidates(
+            query
+        )
 
         if not result:
 
@@ -270,7 +301,8 @@ def chat():
                 "source":
                     "candidate_db"
             })
-
+        
+       
         return jsonify({
 
             "answer":
@@ -280,24 +312,25 @@ def chat():
 
                     result["candidate2"]
                 ),
+        
+        
 
             "source":
                 "candidate_db"
         })
-
-    # ==========================
-    # SEMANTIC
-    # ==========================
+        # ==========================
+        # SEMANTIC
+        # ==========================
 
     elif intent == "semantic":
 
         return jsonify({
 
             "answer":
-                "ChromaDB not connected yet.",
+            "ChromaDB not connected yet.",
 
             "source":
-                "semantic"
+            "semantic"
         })
 
     # ==========================

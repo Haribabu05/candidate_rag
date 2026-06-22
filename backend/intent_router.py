@@ -1,4 +1,25 @@
+import json
 import re
+
+with open(
+    r"C:\Users\bockb\YCDI\pdf_app\candidate_master_data.json",
+    "r",
+    encoding="utf-8"
+) as f:
+
+    candidate_data = json.load(f)
+
+CONSTITUENCIES = set()
+
+for candidate in candidate_data.values():
+
+    CONSTITUENCIES.add(
+        candidate["constituency"].lower()
+    )
+
+print("TOTAL CONSTITUENCIES =", len(CONSTITUENCIES))
+print(CONSTITUENCIES)
+
 
 PARTIES = [
     "dmk",
@@ -8,6 +29,33 @@ PARTIES = [
     "ntk",
     "indep",
     "independent"
+]
+
+
+
+# =========================
+# CONSTITUENCY
+# =========================
+
+constituency_words = [
+
+    "constituency",
+
+    "region",
+
+    "kolathur",
+
+    "ambattur",
+
+    "candidate in",
+
+    "candidates in",
+
+    "candidate from",
+
+    "candidates from",
+
+    "richest candidate"
 ]
 
 EDUCATION_PATTERNS = [
@@ -28,7 +76,9 @@ EDUCATION_PATTERNS = [
     r"\bmphil\b",
     r"\biti\b",
     r"\bhsc\b",
-    r"\bsslc\b"
+    r"\bsslc\b",
+    r"\bbsc\b",
+    r"\bb\.?sc\b",
 ]
 
 SEMANTIC_KEYWORDS = [
@@ -50,12 +100,18 @@ COMPARE_WORDS = [
     "richer"
 ]
 
+CONSTITUENCIES = [
+    "kolathur",
+    "ambattur"
+]
 
 def detect_intent(query):
 
     q = query.lower().strip()
 
-    # compare
+    # =====================
+    # COMPARE
+    # =====================
 
     for word in COMPARE_WORDS:
 
@@ -65,7 +121,9 @@ def detect_intent(query):
         ):
             return "compare"
 
-    # party
+    # =====================
+    # PARTY
+    # =====================
 
     for party in PARTIES:
 
@@ -75,7 +133,9 @@ def detect_intent(query):
         ):
             return "party"
 
-    # education
+    # =====================
+    # EDUCATION
+    # =====================
 
     for pattern in EDUCATION_PATTERNS:
 
@@ -83,40 +143,90 @@ def detect_intent(query):
 
             return "education"
 
-    # constituency
+    # =====================
+    # GENDER
+    # =====================
 
-    constituency_words = [
+    if "male candidate" in q or "male candidates" in q:
+        return "male"
 
-        "constituency",
-        "region",
+    if "female candidate" in q or "female candidates" in q:
+        return "female"
 
-        "candidate in",
-        "candidates in",
+    # =====================
+    # RICHEST
+    # =====================
 
-        "candidate from",
-        "candidates from",
-
-        "female candidates",
-        "male candidates",
+    richest_words = [
 
         "richest candidate",
         "richest candidates",
 
-        "top assets"
+        "top assets",
+        "highest assets",
+
+        "wealthiest candidate",
+        "wealthiest candidates"
     ]
 
-    for word in constituency_words:
+    for word in richest_words:
 
         if word in q:
 
+            return "richest"
+
+    # =====================
+    # CONSTITUENCY
+    # =====================
+
+    for constituency in CONSTITUENCIES:
+
+        if constituency in q:
+
+            print("FOUND CONSTITUENCY =", constituency)
+
             return "constituency"
 
-    # semantic
+    # =====================
+    # SEMANTIC
+    # =====================
 
     for word in SEMANTIC_KEYWORDS:
 
         if word in q:
 
             return "semantic"
+
+    # =====================
+    # CANDIDATE LOOKUP
+    # =====================
+
+    candidate_words = [
+
+        "who is",
+        "tell me about",
+        "describe",
+        "explain",
+        "details of",
+        "profile of",
+
+        "education of",
+        "assets of",
+        "liabilities of",
+
+        "phone of",
+        "email of",
+        "mobile of"
+    ]
+
+    for word in candidate_words:
+
+        if word in q:
+
+            return "unknown"
+
+    # =====================
+    # DEFAULT
+    # =====================
 
     return "unknown"

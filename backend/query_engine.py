@@ -282,35 +282,45 @@ def find_by_constituency(query):
 # COMPARE CANDIDATES
 # ==========================================
 
+import re
+
 def compare_candidates(query):
 
-    matched = []
+    query = query.lower()
 
-    for candidate in candidate_data.values():
+    query = query.replace(
+        "compare",
+        ""
+    )
 
-        name = candidate[
-            "candidate"
-        ].lower()
+    parts = re.split(
+        r"\b(?:vs|versus)\b",
+        query
+    )
 
-        if name in query.lower():
+    print("PARTS =", parts)   # <-- ADD HERE
 
-            matched.append(
-                candidate
-            )
+    if len(parts) < 2:
+        return None
 
-    if len(matched) < 2:
+    candidate1 = find_candidate(
+        parts[0].strip()
+    )
 
+    candidate2 = find_candidate(
+        parts[1].strip()
+    )
+
+    print("C1 =", candidate1)
+    print("C2 =", candidate2)
+
+    if not candidate1 or not candidate2:
         return None
 
     return {
-
-        "candidate1":
-            matched[0],
-
-        "candidate2":
-            matched[1]
+        "candidate1": candidate1,
+        "candidate2": candidate2
     }
-
 
 # ==========================================
 # TOP ASSETS
