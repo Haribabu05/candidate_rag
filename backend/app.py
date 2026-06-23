@@ -287,20 +287,26 @@ def chat():
 
     elif intent == "compare":
 
-        result = compare_candidates(
-            query
-        )
+        result = compare_candidates(query)
 
         if not result:
 
             return jsonify({
-
                 "answer":
                     "Please provide two valid candidate names.",
-
                 "source":
                     "candidate_db"
             })
+
+        return jsonify({
+
+            "answer": format_comparison(
+                result["candidate1"],
+                result["candidate2"]
+            ),
+
+            "source": "candidate_db"
+        })
         
        
         return jsonify({

@@ -1,6 +1,27 @@
 import json
 import re
 
+import re
+import json
+
+with open(
+    "candidate_master_data.json",
+    "r",
+    encoding="utf-8"
+) as f:
+    candidate_data = json.load(f)
+
+CONSTITUENCIES = set()
+
+for candidate in candidate_data.values():
+
+    CONSTITUENCIES.add(
+        candidate["constituency"].lower()
+    )
+
+print("TOTAL CONSTITUENCIES =", len(CONSTITUENCIES))
+
+
 with open(
     r"C:\Users\bockb\YCDI\pdf_app\candidate_master_data.json",
     "r",
@@ -105,6 +126,8 @@ CONSTITUENCIES = [
     "ambattur"
 ]
 
+
+
 def detect_intent(query):
 
     q = query.lower().strip()
@@ -167,7 +190,7 @@ def detect_intent(query):
 
         "wealthiest candidate",
         "wealthiest candidates"
-    ]
+    ] 
 
     for word in richest_words:
 

@@ -286,35 +286,33 @@ import re
 
 def compare_candidates(query):
 
-    query = query.lower()
-
-    query = query.replace(
-        "compare",
-        ""
-    )
+    print("NEW COMPARE FUNCTION LOADED")
 
     parts = re.split(
-        r"\b(?:vs|versus)\b",
-        query
+        r"\b(?:compare|vs|versus|and)\b",
+        query.lower()
     )
 
-    print("PARTS =", parts)   # <-- ADD HERE
+    parts = [
+        p.strip()
+        for p in parts
+        if p.strip()
+    ]
 
-    if len(parts) < 2:
+    print("PARTS =", parts)
+
+    if len(parts) != 2:
+
         return None
 
-    candidate1 = find_candidate(
-        parts[0].strip()
-    )
+    candidate1 = find_candidate(parts[0])
+    candidate2 = find_candidate(parts[1])
 
-    candidate2 = find_candidate(
-        parts[1].strip()
-    )
-
-    print("C1 =", candidate1)
-    print("C2 =", candidate2)
+    print("CANDIDATE 1 =", candidate1)
+    print("CANDIDATE 2 =", candidate2)
 
     if not candidate1 or not candidate2:
+
         return None
 
     return {
