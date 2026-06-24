@@ -227,11 +227,12 @@ def chat():
 
         result = find_by_education(query)
 
+        print("EDUCATION RESULT COUNT =", len(result))
+        print("RESULT =", result[:3])
+
         return jsonify({
 
-            "answer":  format_candidate_list(
-            result
-        ),
+            "answer": format_candidate_list(result),
 
             "source": "candidate_db"
         })
