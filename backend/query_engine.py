@@ -58,6 +58,17 @@ with open(
     candidate_data = json.load(f)
 
 
+degrees = set()
+
+for candidate in candidate_data.values():
+
+    degrees.add(
+        candidate["education"]["degree"]
+    )
+
+print("ALL DEGREES FOUND:")
+print(sorted(degrees))
+
 # ==========================================
 # FIND CANDIDATE
 # ==========================================
