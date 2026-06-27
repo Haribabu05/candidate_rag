@@ -30,6 +30,9 @@ with open(
 
     candidate_data = json.load(f)
 
+
+# CONSTITUENCIES INDEX
+
 CONSTITUENCIES = set()
 
 for candidate in candidate_data.values():
@@ -40,6 +43,20 @@ for candidate in candidate_data.values():
 
 print("TOTAL CONSTITUENCIES =", len(CONSTITUENCIES))
 print(CONSTITUENCIES)
+
+
+# EDUCATION INDEX
+
+EDUCATIONS = set()
+
+for candidate in candidate_data.values():
+
+    EDUCATIONS.add(
+        candidate["education"]["degree"].lower()
+    )
+
+print("TOTAL EDUCATIONS =", len(EDUCATIONS))
+print(EDUCATIONS)
 
 
 PARTIES = [
@@ -78,28 +95,62 @@ constituency_words = [
 
     "richest candidate"
 ]
-
 EDUCATION_PATTERNS = [
-    r"\bbca\b",
-    r"\bmba\b",
-    r"\bmca\b",
-    r"\bb\.?com\b",
-    r"\bbcom\b",
-    r"\bb\.?e\b",
-    r"\bbe\b",
-    r"\bm\.?tech\b",
-    r"\bmtech\b",
-    r"\bph\.?d\b",
-    r"\bphd\b",
-    r"\bb\.?ed\b",
-    r"\bbed\b",
-    r"\bm\.?phil\b",
-    r"\bmphil\b",
-    r"\biti\b",
-    r"\bhsc\b",
+
+    # School
     r"\bsslc\b",
+    r"\bhsc\b",
+
+    # ITI
+    r"\biti\b",
+
+    # Diploma
+    r"\bdiploma\b",
+
+    # Undergraduate
+    r"\bbca\b",
+    r"\bb\.?ca\b",
+
     r"\bbsc\b",
     r"\bb\.?sc\b",
+
+    r"\bbcom\b",
+    r"\bb\.?com\b",
+
+    r"\bba\b",
+    r"\bb\.?a\b",
+
+    r"\bbe\b",
+    r"\bb\.?e\b",
+
+    r"\bbtech\b",
+    r"\bb\.?tech\b",
+
+    r"\bbed\b",
+    r"\bb\.?ed\b",
+
+    # Postgraduate
+    r"\bmca\b",
+    r"\bm\.?ca\b",
+
+    r"\bmba\b",
+    r"\bm\.?ba\b",
+
+    r"\bma\b",
+    r"\bm\.?a\b",
+
+    r"\bmcom\b",
+    r"\bm\.?com\b",
+
+    r"\bmtech\b",
+    r"\bm\.?tech\b",
+
+    r"\bmphil\b",
+    r"\bm\.?phil\b",
+
+    # Doctorate
+    r"\bphd\b",
+    r"\bph\.?d\b",
 ]
 
 SEMANTIC_KEYWORDS = [

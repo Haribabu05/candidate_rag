@@ -4,21 +4,38 @@ from rapidfuzz import process
 
 DEGREE_KEYWORDS = {
 
-    "bca": [
-        "bca"
+    # School
+    "sslc": [
+        "sslc"
     ],
 
-    "mba": [
-        "mba"
+    "hsc": [
+        "hsc"
     ],
 
-    "mca": [
-        "mca"
+    # Diploma
+    "iti": [
+        "iti"
+    ],
+
+    # Undergraduate
+    "ba": [
+        "ba",
+        "b.a"
+    ],
+
+    "bsc": [
+        "bsc",
+        "b.sc"
     ],
 
     "bcom": [
-        "b.com",
-        "bcom"
+        "bcom",
+        "b.com"
+    ],
+
+    "bca": [
+        "bca"
     ],
 
     "be": [
@@ -26,27 +43,50 @@ DEGREE_KEYWORDS = {
         "b.e"
     ],
 
-    "mtech": [
-        "m.tech",
-        "mtech"
+    "btech": [
+        "btech",
+        "b.tech"
     ],
 
+    "bed": [
+        "bed",
+        "b.ed"
+    ],
+
+    # Postgraduate
+    "ma": [
+        "ma",
+        "m.a"
+    ],
+
+    "mcom": [
+        "mcom",
+        "m.com"
+    ],
+
+    "mca": [
+        "mca"
+    ],
+
+    "mba": [
+        "mba"
+    ],
+
+    "mtech": [
+        "mtech",
+        "m.tech"
+    ],
+
+    "mphil": [
+        "mphil",
+        "m.phil"
+    ],
+
+    # Doctorate
     "phd": [
         "phd",
         "ph.d"
     ],
-
-    "iti": [
-        "iti"
-    ],
-
-    "hsc": [
-        "hsc"
-    ],
-
-    "sslc": [
-        "sslc"
-    ]
 }
 
 with open(
@@ -225,12 +265,14 @@ def find_by_party(query):
 # FIND BY EDUCATION
 # ==========================================
 
+
 def find_by_education(query):
 
     q = query.lower()
 
     target_degree = None
 
+    # Find which degree the user asked for
     for degree, keywords in DEGREE_KEYWORDS.items():
 
         for keyword in keywords:
@@ -238,28 +280,31 @@ def find_by_education(query):
             if keyword in q:
 
                 target_degree = degree
-
                 break
 
-    if not target_degree:
+        if target_degree:
+            break
 
+    if not target_degree:
         return []
 
     results = []
 
+    # Search candidates
     for candidate in candidate_data.values():
 
-        degree = candidate[
-            "education"
-        ][
-            "degree"
-        ].lower()
+        candidate_degree = (
+            candidate["education"]["degree"]
+            .lower()
+            .strip()
+        )
 
-        if target_degree in degree:
+        for keyword in DEGREE_KEYWORDS[target_degree]:
 
-            results.append(
-                candidate
-            )
+            if keyword in candidate_degree:
+
+                results.append(candidate)
+                break
 
     return results
 
