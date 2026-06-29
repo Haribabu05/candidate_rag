@@ -100,7 +100,20 @@ def ingest(input_path: str, db_path: str):
         chunks = chunk_text(text)
 
         for i, chunk in enumerate(chunks):
+            
+            header = f"""
+            
+            Candidate: {metadata.get('candidate','')}
+            Party: {metadata.get('party','')}
+            Constituency: {metadata.get('constituency','')}
+            Page: {metadata.get('page',0)}
+
+            """
+
+            chunk = header + "\n" + chunk
+
             all_chunks.append(chunk)
+
             all_metadatas.append({
                 "candidate": metadata.get("candidate", ""),
                 "party": metadata.get("party", ""),
