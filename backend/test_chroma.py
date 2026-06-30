@@ -1,8 +1,7 @@
 from search_chroma import semantic_search
 
 result = semantic_search(
-    query="education",
-    candidate="VSBabu"
+    query="assets",
+    candidate="ERaamadasan"
 )
-
 print(result["documents"][0][0])

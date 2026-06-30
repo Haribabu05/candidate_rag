@@ -3,8 +3,10 @@ import json
 
 from flask_cors import CORS
 
+from semantic_search import semantic_answer
+
 from flask import request
-from gemini_client import ask_gemini
+from groq_client import ask_gemini
 from intent_router import detect_intent
 
 from answer_formatter import (
@@ -32,6 +34,8 @@ with open(
 ) as f:
 
     candidate_data = json.load(f)
+
+KNOWN_CANDIDATES = list(candidate_data.keys())   
 
 app = Flask(__name__)
 
@@ -331,14 +335,13 @@ def chat():
 
     elif intent == "semantic":
 
-        return jsonify({
+        result = semantic_answer(
+            query=query,
+            known_candidates=KNOWN_CANDIDATES,
+            ask_gemini_fn=ask_gemini
+        )
 
-            "answer":
-            "ChromaDB not connected yet.",
-
-            "source":
-            "semantic"
-        })
+        return jsonify(result)
 
     # ==========================
     # WEB / GEMINI

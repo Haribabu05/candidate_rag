@@ -1,157 +1,185 @@
-"""
-ingest.py — Run once to chunk + embed + store all affidavit pages into ChromaDB
 
-Install deps first:
-    pip install chromadb sentence-transformers
-
-Usage:
-    python ingest.py --input extracted_pages.json --db ./chroma_db
-"""
 
 import json
-import argparse
 import re
-from pathlib import Path
-
+from collections import defaultdict
 import chromadb
-from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 
-# ─── Config ───────────────────────────────────────────────────────────────────
-EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"  # Tamil + English
-CHUNK_SIZE = 400       # tokens (approx — we use words as proxy)
-CHUNK_OVERLAP = 50     # words overlap between consecutive chunks
-COLLECTION_NAME = "affidavits"
+# ── Config ────────────────────────────────────────────────────────────────────
+MASTER_JSON   = "candidate_master_data.json"
+PAGES_JSON    = "extracted_pages.json"
+CHROMA_PATH   = "./chroma_db"
+COLLECTION    = "affidavits"
+EMBED_MODEL   = "paraphrase-multilingual-MiniLM-L12-v2"
 
-# ─── Text cleaning ────────────────────────────────────────────────────────────
-def clean_text(text: str) -> str:
-    """Remove OCR noise: very short lines, excessive whitespace."""
-    lines = text.split("\n")
-    lines = [l.strip() for l in lines if len(l.strip()) > 3]
-    text = " ".join(lines)
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
+# ── Helpers ───────────────────────────────────────────────────────────────────
+def clean(text: str) -> str:
+    lines = [l.strip() for l in text.split("\n") if len(l.strip()) > 3]
+    return re.sub(r"\s+", " ", " ".join(lines)).strip()
 
-# ─── Chunking ─────────────────────────────────────────────────────────────────
-def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP):
-    """
-    Split text into overlapping word-based chunks.
-    Returns list of chunk strings.
-    """
-    words = text.split()
-    if len(words) <= chunk_size:
-        return [text]  # short enough — return as single chunk
+def pages_in_range(raw_pages, start, end):
+    return " ".join(
+        clean(p["text"]) for p in raw_pages
+        if start <= p["metadata"]["page"] <= end
+    )
 
-    chunks = []
-    start = 0
-    while start < len(words):
-        end = min(start + chunk_size, len(words))
-        chunk = " ".join(words[start:end])
-        chunks.append(chunk)
-        if end == len(words):
-            break
-        start += chunk_size - overlap  # slide with overlap
+# ── Document builder ──────────────────────────────────────────────────────────
+def build_docs(c: dict, raw_pages: list) -> list[dict]:
+    name  = c["candidate"]
+    party = c["party"]
+    const = c["constituency"]
 
-    return chunks
+    docs = []
 
-# ─── Main ingestion ───────────────────────────────────────────────────────────
-def ingest(input_path: str, db_path: str):
-    print(f"Loading data from {input_path}...")
-    with open(input_path, "r", encoding="utf-8") as f:
+    # 1 — Identity
+    docs.append({
+        "section": "identity",
+        "text": f"""Candidate: {name}
+Party: {party}
+Constituency: {const}
+Section: Identity and Contact Information
+
+Phone: {", ".join(c["phones"]) if c["phones"] else "Not available"}
+Email: {", ".join(c["emails"]) if c["emails"] else "Not available"}
+PAN: {", ".join(c["pan_ids"]) if c["pan_ids"] else "Not available"}
+Spouse: {c["spouse"] or "Not available"}
+Dependents: {c["dependents"]}
+Occupation: {c["occupation"] or "Not available"}"""
+    })
+
+    # 2 — Education
+    edu = (c["education"] or {}).get("degree", "Not extracted")
+    docs.append({
+        "section": "education",
+        "text": f"""Candidate: {name}
+Party: {party}
+Section: Education
+
+Highest Qualification: {edu}
+Raw text: {pages_in_range(raw_pages, 13, 15)[:500]}"""
+    })
+
+    # 3 — Criminal cases (structured)
+    cc      = c["criminal_cases"] or {}
+    pending = cc.get("pending", 0)
+    convicted = cc.get("convicted", 0)
+    docs.append({
+        "section": "criminal_cases",
+        "text": f"""Candidate: {name}
+Party: {party}
+Section: Criminal Cases
+
+Pending Cases: {pending}
+Convicted Cases: {convicted}
+Summary: {"No criminal record" if pending == 0 and convicted == 0
+          else f"{pending} pending case(s), {convicted} conviction(s)"}"""
+    })
+
+    # 4 — Criminal detail (raw OCR pages 4–6)
+    crim_raw = pages_in_range(raw_pages, 4, 6)
+    docs.append({
+        "section": "criminal_detail",
+        "text": f"""Candidate: {name}
+Party: {party}
+Section: Criminal Cases Detail (from affidavit)
+
+{crim_raw[:2000]}"""
+    })
+
+    # 5 — Income tax
+    it = c["income_tax"] or {}
+    if it:
+        it_lines = "\n".join(
+            f"  FY {yr}: Rs.{amt:,}" for yr, amt in sorted(it.items())
+        )
+        it_block = f"Income declared per financial year:\n{it_lines}"
+    else:
+        it_block = "Income tax records not extracted from this affidavit."
+    docs.append({
+        "section": "income_tax",
+        "text": f"""Candidate: {name}
+Party: {party}
+Section: Income Tax
+
+{it_block}"""
+    })
+
+    # 6 — Assets & liabilities (raw OCR pages 7–15)
+    asset_raw = pages_in_range(raw_pages, 7, 15)
+    docs.append({
+        "section": "assets",
+        "text": f"""Candidate: {name}
+Party: {party}
+Section: Assets and Liabilities
+
+{asset_raw[:3000]}"""
+    })
+
+    # Attach metadata to every doc
+    for d in docs:
+        d["candidate"]    = name
+        d["party"]        = party
+        d["constituency"] = const
+
+    return docs
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+def main():
+    print("Loading data...")
+    with open(MASTER_JSON, encoding="utf-8") as f:
+        master = json.load(f)
+    with open(PAGES_JSON, encoding="utf-8") as f:
         pages = json.load(f)
 
-    print(f"Total pages: {len(pages)}")
+    # Group pages by candidate
+    by_candidate = defaultdict(list)
+    for p in pages:
+        by_candidate[p["metadata"]["candidate"]].append(p)
 
-    # Load embedding model
-    print(f"Loading embedding model: {EMBEDDING_MODEL}")
-    model = SentenceTransformer(EMBEDDING_MODEL)
+    # Build semantic documents
+    all_docs = []
+    for name, c in master.items():
+        all_docs.extend(build_docs(c, by_candidate[name]))
+
+    print(f"Total semantic documents: {len(all_docs)}")
 
     # Init ChromaDB
-    client = chromadb.PersistentClient(path=db_path)
-
-    # Delete existing collection if re-running
+    print(f"Connecting to ChromaDB at {CHROMA_PATH}...")
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
     try:
-        client.delete_collection(COLLECTION_NAME)
+        client.delete_collection(COLLECTION)
         print("Deleted existing collection.")
     except Exception:
         pass
-
     collection = client.create_collection(
-        name=COLLECTION_NAME,
+        name=COLLECTION,
         metadata={"hnsw:space": "cosine"}
     )
 
-    all_chunks = []
-    all_metadatas = []
-    all_ids = []
+    # Embed
+    print(f"Loading embedding model: {EMBED_MODEL}")
+    model = SentenceTransformer(EMBED_MODEL)
 
-    chunk_id = 0
-    skipped = 0
+    texts = [d["text"] for d in all_docs]
+    print("Embedding...")
+    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True).tolist()
 
-    for page in pages:
-        raw_text = page.get("text", "")
-        metadata = page.get("metadata", {})
+    # Store
+    collection.add(
+        documents=texts,
+        embeddings=embeddings,
+        metadatas=[{
+            "candidate":    d["candidate"],
+            "party":        d["party"],
+            "constituency": d["constituency"],
+            "section":      d["section"],
+        } for d in all_docs],
+        ids=[f"{d['candidate']}_{d['section']}" for d in all_docs],
+    )
 
-        text = clean_text(raw_text)
-        if len(text) < 50:  # skip nearly empty pages
-            skipped += 1
-            continue
-
-        chunks = chunk_text(text)
-
-        for i, chunk in enumerate(chunks):
-            
-            header = f"""
-            
-            Candidate: {metadata.get('candidate','')}
-            Party: {metadata.get('party','')}
-            Constituency: {metadata.get('constituency','')}
-            Page: {metadata.get('page',0)}
-
-            """
-
-            chunk = header + "\n" + chunk
-
-            all_chunks.append(chunk)
-
-            all_metadatas.append({
-                "candidate": metadata.get("candidate", ""),
-                "party": metadata.get("party", ""),
-                "constituency": metadata.get("constituency", ""),
-                "page": metadata.get("page", 0),
-                "source_file": metadata.get("source_file", ""),
-                "chunk_index": i,
-            })
-            all_ids.append(f"chunk_{chunk_id}")
-            chunk_id += 1
-
-    print(f"Total chunks to embed: {len(all_chunks)} (skipped {skipped} empty pages)")
-
-    # Embed in batches of 64
-    BATCH = 64
-    all_embeddings = []
-    for i in range(0, len(all_chunks), BATCH):
-        batch = all_chunks[i:i+BATCH]
-        embeddings = model.encode(batch, show_progress_bar=False).tolist()
-        all_embeddings.extend(embeddings)
-        print(f"  Embedded {min(i+BATCH, len(all_chunks))}/{len(all_chunks)}")
-
-    # Store in ChromaDB in batches
-    for i in range(0, len(all_chunks), BATCH):
-        collection.add(
-            documents=all_chunks[i:i+BATCH],
-            embeddings=all_embeddings[i:i+BATCH],
-            metadatas=all_metadatas[i:i+BATCH],
-            ids=all_ids[i:i+BATCH],
-        )
-
-    print(f"\nDone! {len(all_chunks)} chunks stored in {db_path}")
-    print(f"Collection: '{COLLECTION_NAME}'")
-
+    print(f"\nDone! {len(all_docs)} documents stored in ChromaDB.")
+    print("Sections per candidate: identity, education, criminal_cases, criminal_detail, income_tax, assets")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default="extracted_pages.json")
-    parser.add_argument("--db", default="./chroma_db")
-    args = parser.parse_args()
-    ingest(args.input, args.db)
+    main()
