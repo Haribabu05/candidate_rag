@@ -81,7 +81,7 @@ def semantic_answer(query: str, known_candidates: list, ask_gemini_fn) -> dict:
         query=query,
         candidate=candidate
     )
-
+    #docs = results["documents"][0]
     docs = results["documents"][0]
     metas = results["metadatas"][0]
 
