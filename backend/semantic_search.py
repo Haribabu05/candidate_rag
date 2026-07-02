@@ -56,6 +56,8 @@ def semantic_search(query: str, candidate: str = None, section: str = None, top_
     return _collection.query(**kwargs)
 
 
+
+
 def semantic_answer(query: str, known_candidates: list, ask_gemini_fn) -> dict:
     """
     Full semantic RAG flow:
@@ -67,6 +69,40 @@ def semantic_answer(query: str, known_candidates: list, ask_gemini_fn) -> dict:
     ask_gemini_fn: pass in your existing ask_gemini(prompt) function
     """
 
+    section = None
+
+
+    q = query.lower()
+
+    if "asset" in q:
+        section = "assets"
+
+    elif "education" in q:
+        section = "education"
+
+    elif "criminal" in q:
+        section = "criminal_cases"
+
+    elif "income" in q:
+            section = "income_tax"
+
+    elif "age" in q:
+        section = "personal_details"
+
+    elif "address" in q:
+        section = "personal_details"
+
+    elif "father" in q:
+        section = "personal_details"
+
+    elif "mother" in q:
+        section = "personal_details"
+
+    elif "wife" in q:
+        section = "personal_details"
+
+    elif "spouse" in q:
+        section = "personal_details"
 
     candidate_data = find_candidate(query)
 
@@ -79,11 +115,22 @@ def semantic_answer(query: str, known_candidates: list, ask_gemini_fn) -> dict:
 
     results = semantic_search(
         query=query,
-        candidate=candidate
+        candidate=candidate,
+        section=section
     )
     #docs = results["documents"][0]
     docs = results["documents"][0]
     metas = results["metadatas"][0]
+
+    print("=" * 80)
+    print("RETRIEVED DOCUMENTS")
+
+    for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
+        print(f"\nRESULT {i}")
+        print(meta)
+        print(doc[:500])
+
+    print("=" * 80)
 
     if not docs:
         return {

@@ -48,6 +48,23 @@ Dependents: {c["dependents"]}
 Occupation: {c["occupation"] or "Not available"}"""
     })
 
+    # 1.5  — Personal Details
+
+    personal = pages_in_range(raw_pages, 1, 2)
+
+    docs.append({
+        "section": "personal_details",
+        "text": f"""Candidate: {name}
+    Party: {party}
+    Constituency: {const}
+    Section: Personal Details
+
+    {personal[:2000]}"""
+    })
+
+
+
+
     # 2 — Education
     edu = (c["education"] or {}).get("degree", "Not extracted")
     docs.append({
@@ -179,7 +196,7 @@ def main():
     )
 
     print(f"\nDone! {len(all_docs)} documents stored in ChromaDB.")
-    print("Sections per candidate: identity, education, criminal_cases, criminal_detail, income_tax, assets")
+    print("Sections per candidate: identity, personal_details,education, criminal_cases, criminal_detail, income_tax, assets")
 
 if __name__ == "__main__":
     main()
