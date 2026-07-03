@@ -1,6 +1,6 @@
 from flask import Flask,jsonify
 import json
-
+from groq_client import ask_gemini
 from flask_cors import CORS
 
 from semantic_search import semantic_answer
@@ -297,38 +297,66 @@ def chat():
         if not result:
 
             return jsonify({
-                "answer":
-                    "Please provide two valid candidate names.",
-                "source":
-                    "candidate_db"
+                "answer": "Please provide two valid candidate names.",
+                "source": "candidate_db"
             })
 
+        c1 = result["candidate1"]
+        c2 = result["candidate2"]
+
+        def value(v):
+            if isinstance(v, (int, float)) and v == 0:
+                return "Not Available"
+            return f"₹{v:,}" if isinstance(v, (int, float)) else (v or "Not Available")
+
+        prompt = f"""
+    You are an AI assistant comparing two Tamil Nadu election candidates.
+
+    Use ONLY the information below.
+
+    Candidate 1
+    -----------
+    Name: {c1['candidate']}
+    Party: {c1['party']}
+    Constituency: {c1['constituency']}
+    Education: {c1['education']['degree']}
+    Assets: {value(c1['assets']['total'])}
+    Liabilities: {value(c1['liabilities'])}
+    Pending Criminal Cases: {c1['criminal_cases']['pending']}
+    Convicted Criminal Cases: {c1['criminal_cases']['convicted']}
+    Occupation: {c1.get('occupation','Not Available') or 'Not Available'}
+
+    Candidate 2
+    -----------
+    Name: {c2['candidate']}
+    Party: {c2['party']}
+    Constituency: {c2['constituency']}
+    Education: {c2['education']['degree']}
+    Assets: {value(c2['assets']['total'])}
+    Liabilities: {value(c2['liabilities'])}
+    Pending Criminal Cases: {c2['criminal_cases']['pending']}
+    Convicted Criminal Cases: {c2['criminal_cases']['convicted']}
+    Occupation: {c2.get('occupation','Not Available') or 'Not Available'}
+
+    Instructions:
+
+    • Compare the two candidates.
+    • Mention the important differences first.
+    • Mention similarities if relevant.
+    • Do NOT invent facts.
+    • If information is unavailable, simply say it is not available.
+    • Write in clear natural language.
+    • Keep the answer under 180 words.
+    """
+
+        ai_answer = ask_gemini(prompt)
+
         return jsonify({
-
-            "answer": format_comparison(
-                result["candidate1"],
-                result["candidate2"]
-            ),
-
-            "source": "candidate_db"
+            "answer": ai_answer,
+            "source": "groq_compare"
         })
-        
        
-        return jsonify({
-
-            "answer":
-                format_comparison(
-
-                    result["candidate1"],
-
-                    result["candidate2"]
-                ),
-        
-        
-
-            "source":
-                "candidate_db"
-        })
+      
         # ==========================
         # SEMANTIC
         # ==========================
