@@ -60,8 +60,7 @@ paddle_env/
 __pycache__/
 *.pyc
 
-# ChromaDB
-chroma_db/
+
 
 # Temporary OCR files
 temp_page.jpg
