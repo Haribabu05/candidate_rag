@@ -1,9 +1,0 @@
-streamlit
-chromadb
-sentence-transformers
-pymupdf
-langchain
-langchain-text-splitters
-torch
-openai
-torchvision

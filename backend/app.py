@@ -27,12 +27,14 @@ from query_engine import (
       find_by_gender
 )
 
+import os
+_dir = os.path.dirname(os.path.abspath(__file__))
+
 with open(
-    "candidate_master_data.json",
+    os.path.join(_dir, "candidate_master_data.json"),
     "r",
     encoding="utf-8"
 ) as f:
-
     candidate_data = json.load(f)
 
 KNOWN_CANDIDATES = list(candidate_data.keys())   
@@ -41,14 +43,17 @@ app = Flask(__name__)
 
 CORS(app)
 
+import os
+_dir = os.path.dirname(os.path.abspath(__file__))
+
 with open(
-    "candidate_master_data.json",
+    os.path.join(_dir, "candidate_master_data.json"),
     "r",
     encoding="utf-8"
 ) as f:
-
     candidate_data = json.load(f)
 
+    
 @app.route('/')
 def home():
     return {
@@ -399,12 +404,8 @@ def chat():
         })
 
 if __name__ == '__main__':
-
-    app.run(
-        debug=True,
-        use_reloader=False
-        )  
-    
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 #commit on 8/06/2024
 #commit on 9/06/2024

@@ -11,8 +11,8 @@ from sentence_transformers import SentenceTransformer
 
 #importing function find_candidate from query_engine.py for implementing rapidfuzzy search
 from query_engine import find_candidate
-
-CHROMA_PATH = "./chroma_db"
+import os
+CHROMA_PATH = os.path.join(os.path.dirname(__file__), "chroma_db")
 COLLECTION_NAME = "affidavits"
 EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 TOP_K = 3

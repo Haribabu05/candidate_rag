@@ -1,7 +1,15 @@
+/* ==========================================
+   RESET
+========================================== */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -10,11 +18,17 @@ body {
   font-family: Inter, sans-serif;
 }
 
+/* ==========================================
+   APP
+========================================== */
+
 .app {
   min-height: 100vh;
 }
 
-/* Landing Page */
+/* ==========================================
+   LANDING
+========================================== */
 
 .landing {
   min-height: 100vh;
@@ -31,19 +45,18 @@ body {
 .landing h1 {
   font-size: 3rem;
   font-weight: 700;
-
   margin-bottom: 15px;
 }
 
 .landing p {
   color: #6b7280;
-
   margin-bottom: 40px;
-
   text-align: center;
 }
 
-/* Prompt */
+/* ==========================================
+   PROMPT BOX
+========================================== */
 
 .prompt-box {
   width: 100%;
@@ -59,8 +72,7 @@ body {
 
   padding: 10px 12px;
 
-  box-shadow:
-    0 2px 8px rgba(0,0,0,.06);
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
 }
 
 .prompt-box input {
@@ -74,7 +86,9 @@ body {
   padding: 10px;
 }
 
-.prompt-box button {
+.prompt-box button,
+.bottom-input button {
+
   width: 45px;
   height: 45px;
 
@@ -88,22 +102,44 @@ body {
   cursor: pointer;
 
   font-size: 18px;
+
+  transition: all .2s ease;
 }
 
-/* Suggestions */
+.prompt-box button:hover,
+.bottom-input button:hover {
+
+  transform: scale(1.08);
+
+}
+
+.prompt-box button:active,
+.bottom-input button:active {
+
+  transform: scale(.95);
+
+}
+
+/* ==========================================
+   SUGGESTIONS
+========================================== */
 
 .suggestions {
+
   margin-top: 30px;
 
   display: flex;
+
   flex-wrap: wrap;
 
   gap: 12px;
 
   justify-content: center;
+
 }
 
 .suggestions button {
+
   border: 1px solid #e5e7eb;
 
   background: white;
@@ -113,80 +149,217 @@ body {
   border-radius: 20px;
 
   cursor: pointer;
+
+  transition: .2s;
+
 }
 
 .suggestions button:hover {
-  background: #f3f4f6;
+
+  background: black;
+
+  color: white;
+
+  border-color: black;
+
 }
 
-/* Chat Page */
+/* ==========================================
+   CHAT PAGE
+========================================== */
 
 .chat-page {
+
   min-height: 100vh;
 
   display: flex;
+
   flex-direction: column;
+
 }
 
 .chat-container {
+
   flex: 1;
 
-  max-width: 900px;
-
   width: 100%;
+
+  max-width: 900px;
 
   margin: auto;
 
   padding: 40px 20px 120px;
+
 }
 
-/* Messages */
+/* ==========================================
+   MESSAGES
+========================================== */
 
 .message {
+
   display: flex;
 
-  margin-bottom: 20px;
+  margin-bottom: 28px;
+
 }
 
 .message.user {
+
   justify-content: flex-end;
+
 }
 
 .message.assistant {
+
   justify-content: flex-start;
+
 }
 
 .bubble {
+
   max-width: 75%;
 
-  padding: 16px 20px;
+  padding: 18px 22px;
 
   border-radius: 20px;
 
-  line-height: 1.6;
+  line-height: 1.7;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: break-word;
+
 }
 
 .user .bubble {
-  background: black;
+
+  background: #111827;
+
   color: white;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+
 }
 
 .assistant .bubble {
-  background: #f3f4f6;
-  color: black;
+
+  background: white;
+
+  color: #111827;
+
+  border: 2px solid #111827;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+
+  transition: .2s;
+
 }
 
-/* Bottom Input */
+.assistant .bubble:hover {
+
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+
+}
+
+/* ==========================================
+   SOURCES
+========================================== */
+
+.sources {
+
+  margin-top: 16px;
+
+  padding-top: 14px;
+
+  border-top: 1px solid #e5e7eb;
+
+}
+
+.sources strong {
+
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 13px;
+
+  color: #666;
+
+}
+
+.sources div {
+
+  display: inline-block;
+
+  margin: 4px 8px 4px 0;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #f3f4f6;
+
+  border: 1px solid #d1d5db;
+
+  color: #374151;
+
+  font-size: 12px;
+
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.loading {
+
+  color: #666;
+
+  animation: pulse 1.2s infinite;
+
+  font-style: italic;
+
+}
+
+@keyframes pulse {
+
+  0% {
+
+    opacity: .3;
+
+  }
+
+  50% {
+
+    opacity: 1;
+
+  }
+
+  100% {
+
+    opacity: .3;
+
+  }
+
+}
+
+/* ==========================================
+   INPUT
+========================================== */
 
 .bottom-input {
+
   position: fixed;
 
   bottom: 20px;
+
   left: 50%;
 
   transform: translateX(-50%);
 
   width: 90%;
+
   max-width: 900px;
 
   display: flex;
@@ -199,80 +372,102 @@ body {
 
   padding: 10px;
 
-  box-shadow:
-    0 4px 20px rgba(0,0,0,.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,.10);
+
 }
 
 .bottom-input input {
+
   flex: 1;
 
   border: none;
+
   outline: none;
 
   font-size: 16px;
 
   padding: 10px;
+
 }
 
-.bottom-input button {
-  width: 45px;
-  height: 45px;
+/* ==========================================
+   FOOTER
+========================================== */
 
-  border: none;
+.footer-note {
 
-  border-radius: 50%;
+  text-align: center;
 
-  background: black;
-  color: white;
+  margin-top: 20px;
 
-  cursor: pointer;
+  padding: 12px;
+
+  color: #777;
+
+  font-size: 12px;
+
 }
 
-/* Mobile */
+/* ==========================================
+   BUTTONS
+========================================== */
 
-@media (max-width: 768px) {
+button:disabled {
+
+  opacity: .6;
+
+  cursor: not-allowed;
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width:768px) {
 
   .landing h1 {
+
     font-size: 2rem;
+
     text-align: center;
+
+  }
+
+  .landing p {
+
+    font-size: 15px;
+
   }
 
   .bubble {
-    max-width: 90%;
+
+    max-width: 92%;
+
+    padding: 16px;
+
   }
-}
 
-.loading {
-  font-style: italic;
-  opacity: 0.8;
-}
+  .bottom-input {
 
-.sources {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #ddd;
-  font-size: 13px;
-  color: #666;
-}
+    width: 95%;
 
-.sources strong {
-  display: block;
-  margin-bottom: 6px;
-}
+    bottom: 12px;
 
-.sources div {
-  margin-bottom: 4px;
-}
+  }
 
-.footer-note {
-  text-align: center;
-  margin-top: 20px;
-  padding: 12px;
-  font-size: 12px;
-  color: #777;
-}
+  .suggestions {
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    gap: 8px;
+
+  }
+
+  .suggestions button {
+
+    padding: 10px 14px;
+
+    font-size: 14px;
+
+  }
+
 }

@@ -4,8 +4,11 @@ import re
 import re
 import json
 
+import os
+_dir = os.path.dirname(os.path.abspath(__file__))
+
 with open(
-    "candidate_master_data.json",
+    os.path.join(_dir, "candidate_master_data.json"),
     "r",
     encoding="utf-8"
 ) as f:
@@ -22,13 +25,7 @@ for candidate in candidate_data.values():
 print("TOTAL CONSTITUENCIES =", len(CONSTITUENCIES))
 
 
-with open(
-    r"C:\Users\bockb\YCDI\pdf_app\candidate_master_data.json",
-    "r",
-    encoding="utf-8"
-) as f:
 
-    candidate_data = json.load(f)
 
 
 # CONSTITUENCIES INDEX

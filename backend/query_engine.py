@@ -89,15 +89,15 @@ DEGREE_KEYWORDS = {
     ],
 }
 
+import os
+_dir = os.path.dirname(os.path.abspath(__file__))
+
 with open(
-    r"C:\Users\bockb\YCDI\pdf_app\candidate_master_data.json",
+    os.path.join(_dir, "candidate_master_data.json"),
     "r",
     encoding="utf-8"
 ) as f:
-
     candidate_data = json.load(f)
-
-
 degrees = set()
 
 for candidate in candidate_data.values():
@@ -118,12 +118,14 @@ import re
 import json
 
 
+import os
+_dir = os.path.dirname(os.path.abspath(__file__))
+
 with open(
-    "candidate_master_data.json",
+    os.path.join(_dir, "candidate_master_data.json"),
     "r",
     encoding="utf-8"
 ) as f:
-
     candidate_data = json.load(f)
 
 
