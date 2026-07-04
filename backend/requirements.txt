@@ -1,4 +1,4 @@
-@"
+
 flask
 flask-cors
 chromadb
@@ -7,4 +7,3 @@ groq
 python-dotenv
 thefuzz
 python-Levenshtein
-"@ | Out-File -FilePath requirements.txt -Encoding utf8
