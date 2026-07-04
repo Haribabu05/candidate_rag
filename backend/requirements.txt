@@ -1,0 +1,10 @@
+@"
+flask
+flask-cors
+chromadb
+sentence-transformers
+groq
+python-dotenv
+thefuzz
+python-Levenshtein
+"@ | Out-File -FilePath requirements.txt -Encoding utf8
