@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 
-const API =
-  process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
+const API = process.env.REACT_APP_API_URL || "https://candidaterag-production.up.railway.app";
 
 function App() {
   const [message, setMessage] = useState("");
