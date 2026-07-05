@@ -6,13 +6,18 @@ from collections import defaultdict
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-# ── Config ────────────────────────────────────────────────────────────────────
-MASTER_JSON   = "candidate_master_data.json"
-PAGES_JSON    = "extracted_pages.json"
-CHROMA_PATH   = "./chroma_db"
-COLLECTION    = "affidavits"
-EMBED_MODEL   = "paraphrase-multilingual-MiniLM-L12-v2"
+import os
 
+# ── Config ────────────────────────────────────────────────────────────────────
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+MASTER_JSON = os.path.join(BASE_DIR, "candidate_master_data.json")
+PAGES_JSON = os.path.join(BASE_DIR, "extracted_pages.json")
+CHROMA_PATH = os.path.join(BASE_DIR, "chroma_db")
+
+COLLECTION = "affidavits"
+EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def clean(text: str) -> str:
     lines = [l.strip() for l in text.split("\n") if len(l.strip()) > 3]

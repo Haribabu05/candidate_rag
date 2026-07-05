@@ -53,7 +53,7 @@ with open(
 ) as f:
     candidate_data = json.load(f)
 
-    
+
 @app.route('/')
 def home():
     return {
@@ -404,7 +404,7 @@ def chat():
         })
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 #commit on 8/06/2024
