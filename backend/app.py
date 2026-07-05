@@ -5,6 +5,10 @@ from flask_cors import CORS
 
 from semantic_search import semantic_answer
 
+from flask import Flask, jsonify, request
+import json
+from flask_cors import CORS
+
 from flask import request
 from groq_client import ask_gemini
 from intent_router import detect_intent
@@ -40,11 +44,14 @@ with open(
 KNOWN_CANDIDATES = list(candidate_data.keys())   
 
 app = Flask(__name__)
+CORS(app)
 
-CORS(app, origins=[
-    "https://affidavit-rag-frontend.vercel.app",
-    "http://localhost:3000"
-])
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 import os
 _dir = os.path.dirname(os.path.abspath(__file__))
