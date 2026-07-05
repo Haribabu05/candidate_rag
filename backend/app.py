@@ -41,7 +41,10 @@ KNOWN_CANDIDATES = list(candidate_data.keys())
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, origins=[
+    "https://affidavit-rag-frontend.vercel.app",
+    "http://localhost:3000"
+])
 
 import os
 _dir = os.path.dirname(os.path.abspath(__file__))
