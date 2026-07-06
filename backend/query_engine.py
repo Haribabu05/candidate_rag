@@ -351,7 +351,7 @@ def compare_candidates(query):
         query.lower()
     )
 
-    parts = [
+    parts = [ 
         p.strip()
         for p in parts
         if p.strip()

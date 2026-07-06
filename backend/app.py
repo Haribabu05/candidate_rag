@@ -27,6 +27,30 @@ with open(os.path.join(_dir, "candidate_master_data.json"), "r", encoding="utf-8
 
 KNOWN_CANDIDATES = list(candidate_data.keys())
 
+
+# ── Follow-up question generation ─────────────────────────────────────────────
+def generate_follow_ups(query, answer, context=""):
+    prompt = f"""Based on this question and answer about Tamil Nadu election candidates,
+generate 4 short follow-up questions a user might want to ask next.
+Question: {query}
+Answer: {answer}
+{f"Context: {context}" if context else ""}
+Return only 4 numbered questions, nothing else."""
+
+    try:
+        response = ask_gemini(prompt)
+        follow_ups = []
+        for line in response.splitlines():
+            line = line.strip()
+            if line and line[0].isdigit():
+                question = line[2:].strip() if len(line) > 1 and line[1] in ".)" else line
+                follow_ups.append(question)
+        return follow_ups[:4]
+    except Exception as e:
+        print("FOLLOW-UP GENERATION ERROR:", e)
+        return []
+
+
 # ── Flask app ─────────────────────────────────────────────────────────────────
 app = Flask(__name__)
 CORS(app)
@@ -124,7 +148,8 @@ def chat():
             answer = format_candidate(result)
             remember_candidate(session_id, result["candidate"])
             retain_memory(session_id, f"User asked about candidate {result['candidate']} from {result['party']}.")
-            return jsonify({"answer": answer, "source": "candidate_db"})
+            follow_ups = generate_follow_ups(query, answer)
+            return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # PARTY
     elif intent == "party":
@@ -132,7 +157,8 @@ def chat():
         answer = format_candidate_list(result)
         remember_party(session_id, query)
         retain_memory(session_id, f"User searched for candidates by party. Query: {query}")
-        return jsonify({"answer": answer, "source": "candidate_db"})
+        follow_ups = generate_follow_ups(query, answer)
+        return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # EDUCATION
     elif intent == "education":
@@ -140,7 +166,8 @@ def chat():
         print("EDUCATION RESULT COUNT =", len(result))
         answer = format_candidate_list(result)
         retain_memory(session_id, f"User searched for candidates by education. Query: {query}")
-        return jsonify({"answer": answer, "source": "candidate_db"})
+        follow_ups = generate_follow_ups(query, answer)
+        return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # CONSTITUENCY
     elif intent == "constituency":
@@ -148,21 +175,24 @@ def chat():
         answer = format_candidate_list(result)
         remember_constituency(session_id, query)
         retain_memory(session_id, f"User searched for candidates in constituency. Query: {query}")
-        return jsonify({"answer": answer, "source": "candidate_db"})
+        follow_ups = generate_follow_ups(query, answer)
+        return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # MALE
     elif intent == "male":
         result = find_by_gender("male")
         answer = format_candidate_list(result)
         retain_memory(session_id, "User searched for male candidates.")
-        return jsonify({"answer": answer, "source": "candidate_db"})
+        follow_ups = generate_follow_ups(query, answer)
+        return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # FEMALE
     elif intent == "female":
         result = find_by_gender("female")
         answer = format_candidate_list(result)
         retain_memory(session_id, "User searched for female candidates.")
-        return jsonify({"answer": answer, "source": "candidate_db"})
+        follow_ups = generate_follow_ups(query, answer)
+        return jsonify({"answer": answer, "source": "candidate_db", "follow_ups": follow_ups})
 
     # COMPARE
     elif intent == "compare":
@@ -217,7 +247,8 @@ Instructions:
         ai_answer = ask_gemini(prompt)
         remember_compare(session_id, c1["candidate"], c2["candidate"])
         retain_memory(session_id, f"User compared {c1['candidate']} with {c2['candidate']}.")
-        return jsonify({"answer": ai_answer, "source": "groq_compare"})
+        follow_ups = generate_follow_ups(query, ai_answer)
+        return jsonify({"answer": ai_answer, "source": "groq_compare", "follow_ups": follow_ups})
 
     # SEMANTIC RAG
     elif intent == "semantic":
@@ -242,7 +273,8 @@ Answer based on Tamil Nadu election candidate information if relevant, otherwise
 
     retain_memory(session_id, f"User asked: {query}. Answer: {answer[:200]}")
 
-    return jsonify({"answer": answer, "source": "groq"})
+    follow_ups = generate_follow_ups(query, answer)
+    return jsonify({"answer": answer, "source": "groq", "follow_ups": follow_ups})
 
 
 if __name__ == '__main__':

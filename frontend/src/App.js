@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 
 const API = process.env.REACT_APP_API_URL || "https://candidaterag-production.up.railway.app";
+//const API = process.env.REACT_APP_API_URL
 
 // One session ID per browser tab — persists for the session
 const SESSION_ID = Math.random().toString(36).substring(2, 10);
@@ -42,6 +43,7 @@ function App() {
               : data.answer,
           source: data.source || "",
           sources: data.sources || [],
+          follow_ups: data.follow_ups || [],
         },
       ]);
     } catch (error) {
@@ -62,7 +64,7 @@ function App() {
     <div className="app">
       {messages.length === 0 ? (
         <div className="landing">
-          <h1>Candidate Intelligence AI</h1>
+          <h1>Candidate RAG Chatbot</h1>
           <p>
             Ask anything about candidates, parties,
             constituencies, education, assets and
@@ -84,8 +86,8 @@ function App() {
             <button onClick={() => setMessage("Compare MKStalin and VSBabu")}>
               Compare Candidates
             </button>
-            <button onClick={() => setMessage("Show DMK candidates")}>
-              DMK Candidates
+            <button onClick={() => setMessage("summarize candidates")}>
+             summarize Candidates
             </button>
             <button onClick={() => setMessage("Top 10 assets")}>
               Top Assets
@@ -113,6 +115,22 @@ function App() {
                       <strong>Retrieved From</strong>
                       {msg.sources.map((s, i) => (
                         <div key={i}>📄 {s.candidate} • {s.section}</div>
+                      ))}
+                    </div>
+                  )}
+                  {msg.follow_ups && msg.follow_ups.length > 0 && (
+                    <div className="follow-ups">
+                      <p>You might also ask:</p>
+                      {msg.follow_ups.map((q, i) => (
+                        <button
+                          key={i}
+                          className="follow-up-btn"
+                          onClick={() => {
+                            setMessage(q);
+                          }}
+                        >
+                          {q}
+                        </button>
                       ))}
                     </div>
                   )}

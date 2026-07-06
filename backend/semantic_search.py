@@ -2,6 +2,7 @@
 semantic_search.py — ChromaDB retrieval module for the Flask app.
 """
 
+import re
 import chromadb
 from sentence_transformers import SentenceTransformer
 from query_engine import find_candidate
@@ -43,9 +44,52 @@ def semantic_search(query: str, candidate: str = None, section: str = None, top_
     return _collection.query(**kwargs)
 
 
+def _parse_answer_and_follow_ups(raw_response: str):
+    """
+    Parse a raw Gemini response of the form:
+
+        ANSWER:
+        <answer text>
+        FOLLOW_UP_QUESTIONS:
+        1. <question 1>
+        2. <question 2>
+        ...
+
+    Falls back gracefully if the expected markers are missing or the
+    numbering format doesn't exactly match "N." / "N)".
+    """
+    if "FOLLOW_UP_QUESTIONS:" not in raw_response:
+        return raw_response.strip(), []
+
+    parts = raw_response.split("FOLLOW_UP_QUESTIONS:", 1)
+    answer_part = parts[0].replace("ANSWER:", "").strip()
+    follow_up_part = parts[1].strip()
+
+    follow_ups = []
+    # Matches "1.", "1)", "1 -", etc. at the start of a line, with anything after it.
+    line_pattern = re.compile(r"^\s*\d+\s*[.)-]?\s*(.+)$")
+
+    for line in follow_up_part.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        match = line_pattern.match(line)
+        if match:
+            question = match.group(1).strip()
+            if question:
+                follow_ups.append(question)
+        else:
+            # Line doesn't look numbered but still has content — keep it
+            # rather than silently dropping a follow-up question.
+            follow_ups.append(line)
+
+    return answer_part, follow_ups
+
+
 def semantic_answer(query: str, known_candidates: list, ask_gemini_fn, memory_context: str = "") -> dict:
     """
     Full semantic RAG flow with Hindsight memory context injected into prompt.
+    Now also returns model-generated follow-up questions.
     """
     section = None
     q = query.lower()
@@ -82,7 +126,8 @@ def semantic_answer(query: str, known_candidates: list, ask_gemini_fn, memory_co
         return {
             "answer": "No relevant information found in the affidavits.",
             "source": "semantic",
-            "sources": []
+            "sources": [],
+            "follow_ups": []
         }
 
     context_parts = []
@@ -102,9 +147,18 @@ Context:
 
 Question: {query}
 
-Answer:"""
+Respond in this exact format:
+ANSWER:
+<your answer here>
+FOLLOW_UP_QUESTIONS:
+1. <question 1>
+2. <question 2>
+3. <question 3>
+4. <question 4>
+"""
 
-    answer_text = ask_gemini_fn(prompt)
+    raw_response = ask_gemini_fn(prompt)
+    answer_text, follow_ups = _parse_answer_and_follow_ups(raw_response)
 
     sources = [
         {"candidate": m["candidate"], "section": m["section"]}
@@ -114,5 +168,6 @@ Answer:"""
     return {
         "answer": answer_text,
         "source": "semantic",
-        "sources": sources
+        "sources": sources,
+        "follow_ups": follow_ups
     }

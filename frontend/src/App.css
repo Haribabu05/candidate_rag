@@ -471,3 +471,33 @@ button:disabled {
   }
 
 }
+
+.follow-ups {
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.follow-ups p {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.follow-up-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #333;
+}
+
+.follow-up-btn:hover {
+  background: #e8e8e8;
+}
