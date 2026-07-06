@@ -80,17 +80,8 @@ constituency_words = [
 
     "kolathur",
 
-    "ambattur",
+    "ambattur"
 
-    "candidate in",
-
-    "candidates in",
-
-    "candidate from",
-
-    "candidates from",
-
-    "richest candidate"
 ]
 EDUCATION_PATTERNS = [
 
@@ -156,7 +147,8 @@ SEMANTIC_KEYWORDS = [
     "affidavit",
     "criminal",
     "declaration",
-    "disclosure"
+    "disclosure",
+    "explain"
 ]
 
 COMPARE_WORDS = [
