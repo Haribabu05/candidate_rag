@@ -64,7 +64,7 @@ function App() {
     <div className="app">
       {messages.length === 0 ? (
         <div className="landing">
-          <h1>Candidate RAG Chatbot</h1>
+          <h1>Candidate Complaince Agent</h1>
           <p>
             Ask anything about candidates, parties,
             constituencies, education, assets and
