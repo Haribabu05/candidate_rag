@@ -1,70 +1,289 @@
-# Getting Started with Create React App
+# Candidate Compliance Agent 🗳️
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An AI agent that lets anyone query Tamil Nadu 2026 candidate affidavits — assets, criminal records, income declarations — in plain English or Tamil.
 
-## Available Scripts
+🔗 **Live Demo:** https://affidavit-rag-frontend.vercel.app  
+💻 **GitHub:** https://github.com/Haribabu05/candidate_rag
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## The Problem
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Every candidate contesting elections is legally required to submit affidavits declaring their assets, liabilities, criminal cases, and income. These documents are public — but effectively inaccessible.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+They're scanned PDFs. In Tamil. Buried on government websites. Nobody reads them.
 
-### `npm test`
+This project changes that.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## What It Does
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Ask about any candidate's assets, criminal record, income, or education
+- Query in plain English or Tamil
+- Get answers directly from official affidavit documents
+- Follow-up questions suggested after every answer
+- Remembers your past queries across sessions (Hindsight memory)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Architecture
 
-### `npm run eject`
+```
+React Frontend (Vercel)
+        ↓
+    SESSION_ID
+        ↓
+Flask Backend (Railway)
+        ↓
+Hindsight Memory — Recall past context
+        ↓
+    Intent Router
+        ↓
+Structured Query  OR  Semantic RAG (ChromaDB)
+        ↓
+    Groq LLM (Llama 3.3 70B)
+        ↓
+Hindsight Memory — Retain new context
+        ↓
+Response + 4 Follow-up Questions
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Layer | Technology |
+|---|---|
+| Frontend | React, Vercel |
+| Backend | Flask, Gunicorn, Railway |
+| OCR | Tesseract (eng+tam, --psm 6) |
+| Embeddings | paraphrase-multilingual-MiniLM-L12-v2 |
+| Vector DB | ChromaDB |
+| LLM | Groq API (Llama 3.3 70B Versatile) |
+| Memory | Hindsight (Vectorize) |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## How It Works
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. OCR Pipeline
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Scanned PDFs are converted to images at 300 DPI and OCR'd using Tesseract with Tamil + English language models:
 
-### Code Splitting
+```python
+text = pytesseract.image_to_string(
+    image,
+    lang="eng+tam",
+    config="--psm 6"
+)
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 2. Semantic Chunking
 
-### Analyzing the Bundle Size
+Instead of naive 500-token page splits, each candidate gets 6 topic-specific documents:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Identity & Contact
+- Education
+- Criminal Cases (structured)
+- Criminal Detail (raw OCR)
+- Income Tax
+- Assets & Liabilities
 
-### Making a Progressive Web App
+35 candidates × 6 sections = **210 semantic documents** with precise retrieval.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 3. Intent Router
 
-### Advanced Configuration
+Not every query needs RAG. The intent router handles:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+| Intent | Handler |
+|---|---|
+| Party lookup | Direct structured query |
+| Education filter | Direct structured query |
+| Constituency search | Direct structured query |
+| Candidate compare | Groq LLM with structured data |
+| Summarize / Criminal / Affidavit | Semantic RAG |
+| Unknown | Fuzzy candidate name matching |
 
-### Deployment
+### 4. Hindsight Memory
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Every query recalls past context and stores new context:
 
-### `npm run build` fails to minify
+```python
+# Recall before answering
+past_memory = recall_memory(session_id, query)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Inject into prompt
+prompt = f"Previous context: {past_memory}\n\nContext: {retrieved}\n\nQuestion: {query}"
+
+# Store after answering
+retain_memory(session_id, f"User asked: {query}. Answer: {answer}")
+```
+
+### 5. Follow-up Questions
+
+After every answer, the LLM generates 4 contextual follow-up questions based on the query, retrieved context, and memory. These appear as clickable buttons.
+
+---
+
+## Project Structure
+
+```
+pdf_app/
+├── backend/
+│   ├── app.py                    # Flask API + chat endpoint
+│   ├── semantic_search.py        # ChromaDB retrieval + RAG
+│   ├── intent_router.py          # Query intent detection
+│   ├── memory.py                 # Hindsight integration
+│   ├── query_engine.py           # Structured queries + fuzzy search
+│   ├── ingest.py                 # Semantic document builder
+│   ├── extract_pipeline.py       # OCR pipeline
+│   ├── ingest_pipeline.py        # Structured data extractor
+│   ├── groq_client.py            # Groq LLM client
+│   ├── answer_formatter.py       # Response formatting
+│   ├── candidate_master_data.json
+│   ├── extracted_pages.json
+│   ├── chroma_db/
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── App.js
+│   │   └── App.css
+│   └── package.json
+└── data/
+    └── KOLATHUR/                 # Source PDFs
+```
+
+---
+
+## Setup
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+- Tesseract OCR with Tamil language pack
+- Poppler (for pdf2image)
+
+### Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+
+# Set environment variables
+cp .env.example .env
+# Add GROQ_API_KEY and HINDSIGHT_API_KEY
+
+# Run OCR pipeline
+python extract_pipeline.py
+
+# Build structured data
+python ingest_pipeline.py
+
+# Build ChromaDB
+python ingest.py
+
+# Start server
+python app.py
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+echo "REACT_APP_API_URL=http://localhost:5000" > .env
+npm start
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Health check |
+| GET | `/candidates` | List all candidates |
+| GET | `/candidates/<name>` | Get candidate details |
+| GET | `/party/<party>` | Candidates by party |
+| GET | `/top-assets` | Top 10 by assets |
+| POST | `/chat` | Main chat endpoint |
+
+### Chat Request
+
+```json
+{
+  "message": "Does MKStalin have any criminal cases?",
+  "session_id": "abc123"
+}
+```
+
+### Chat Response
+
+```json
+{
+  "answer": "SSharan has no pending criminal cases.",
+  "source": "semantic",
+  "sources": [{"candidate": "SSharan", "section": "criminal_cases"}],
+  "follow_ups": [
+    "What are SSharan's total declared assets?",
+    "What is SSharan's declared income?",
+    "How does SSharan compare to other candidates?",
+    "What is SSharan's educational qualification?"
+  ]
+}
+```
+
+---
+
+## Data
+
+- **35 candidates** from Kolathur constituency
+- **619 pages** of OCR'd affidavit text
+- **210 semantic documents** in ChromaDB
+- **11 political parties** represented
+
+---
+
+## Deployment
+
+**Backend → Railway**
+1. Push to GitHub
+2. Connect Railway to repo, set root directory to `backend`
+3. Add `GROQ_API_KEY` and `HINDSIGHT_API_KEY` environment variables
+4. Railway auto-detects Python and uses `Procfile`
+
+**Frontend → Vercel**
+1. Push frontend to GitHub
+2. Connect Vercel, add `REACT_APP_API_URL` environment variable
+3. Vercel auto-builds React
+
+---
+
+## Known Limitations
+
+- 35 candidates only (scales to 4500+ with full OCR run)
+- Structured data extraction has lower accuracy on Tamil tables due to OCR noise
+- Railway.app domain may be blocked by some Indian ISPs
+
+---
+
+## Built With
+
+- [Groq](https://groq.com) — Fast LLM inference
+- [Hindsight by Vectorize](https://hindsight.vectorize.io) — Persistent agent memory
+- [ChromaDB](https://www.trychroma.com) — Vector database
+- [Sentence Transformers](https://www.sbert.net) — Multilingual embeddings
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) — Tamil + English OCR
+
+---
+
+## Author
+
+**Haribabu S**  
+[LinkedIn](https://linkedin.com/in/haribabu) · [GitHub](https://github.com/Haribabu05)
+
+---
+
+*Built during HackWithChennai 2.0*
