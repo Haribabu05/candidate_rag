@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <style>
+    .title { font: 700 30px Arial, sans-serif; fill: #13233a; }.subtitle { font: 16px Arial, sans-serif; fill: #52657d; }.group { fill: #f5f8fc; stroke: #9bb4d0; stroke-width: 2; rx: 16; }.groupTitle { font: 700 18px Arial, sans-serif; fill: #264b75; }.box { stroke-width: 2; rx: 12; }.client { fill:#e8f2ff;stroke:#4f86c6; }.service { fill:#eefbf3;stroke:#4ea96b; }.store { fill:#fff8e7;stroke:#d49a28; }.model { fill:#f3edff;stroke:#855ccc; }.decision { fill:#fff0ec;stroke:#d66d50; }.text { font:600 17px Arial,sans-serif;fill:#172b43; }.small { font:14px Arial,sans-serif;fill:#41546c; }.arrow { stroke:#55708d;stroke-width:3;fill:none;marker-end:url(#arrow); }.dashed { stroke-dasharray:7 6; }.label { font:13px Arial,sans-serif;fill:#52657d; }
+  </style>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#55708d"/></marker></defs>
+  <text x="70" y="58" class="title">Candidate Compliance Agent — Hybrid RAG Request Architecture</text>
+  <text x="70" y="87" class="subtitle">Online flow: route deterministic requests to structured data; route affidavit-detail questions to grounded semantic retrieval</text>
+
+  <rect x="50" y="135" width="210" height="765" class="group"/><text x="75" y="170" class="groupTitle">Client</text>
+  <rect x="80" y="220" width="150" height="110" class="box client"/><text x="112" y="260" class="text">React frontend</text><text x="102" y="287" class="small">Question + session ID</text>
+  <rect x="80" y="570" width="150" height="135" class="box client"/><text x="105" y="612" class="text">Response UI</text><text x="96" y="640" class="small">Answer + sources</text><text x="96" y="663" class="small">Follow-up buttons</text>
+
+  <rect x="315" y="135" width="330" height="765" class="group"/><text x="340" y="170" class="groupTitle">Flask API / orchestration</text>
+  <rect x="350" y="215" width="260" height="105" class="box service"/><text x="410" y="257" class="text">POST /chat</text><text x="386" y="284" class="small">Validate message and session</text>
+  <rect x="350" y="375" width="260" height="110" class="box service"/><text x="399" y="417" class="text">Memory recall</text><text x="375" y="444" class="small">Hindsight: relevant past context</text>
+  <rect x="350" y="540" width="260" height="115" class="box decision"/><text x="403" y="582" class="text">Intent router</text><text x="375" y="609" class="small">Structured vs. semantic route</text>
+  <rect x="350" y="720" width="260" height="110" class="box service"/><text x="401" y="762" class="text">Memory retain</text><text x="374" y="789" class="small">Store concise session context</text>
+
+  <rect x="710" y="135" width="365" height="765" class="group"/><text x="735" y="170" class="groupTitle">Route A — Structured answers</text>
+  <rect x="750" y="270" width="285" height="115" class="box service"/><text x="824" y="312" class="text">Query engine</text><text x="780" y="339" class="small">party · education · constituency</text><text x="780" y="362" class="small">gender · candidate comparison</text>
+  <rect x="750" y="470" width="285" height="130" class="box store"/><text x="808" y="512" class="text">Candidate master JSON</text><text x="780" y="539" class="small">Parsed, structured affidavit facts</text><text x="780" y="562" class="small">Fuzzy candidate-name lookup</text>
+  <rect x="750" y="690" width="285" height="95" class="box model"/><text x="827" y="730" class="text">Groq Llama 3.3 70B</text><text x="785" y="756" class="small">Only for natural-language comparison</text>
+
+  <rect x="1140" y="135" width="410" height="765" class="group"/><text x="1165" y="170" class="groupTitle">Route B — Semantic RAG</text>
+  <rect x="1180" y="215" width="330" height="105" class="box service"/><text x="1240" y="257" class="text">Query understanding</text><text x="1210" y="284" class="small">Infer candidate and affidavit section</text>
+  <rect x="1180" y="375" width="330" height="105" class="box model"/><text x="1224" y="417" class="text">Multilingual query embedding</text><text x="1210" y="444" class="small">MiniLM-L12-v2 → query vector</text>
+  <rect x="1180" y="535" width="330" height="125" class="box store"/><text x="1290" y="577" class="text">ChromaDB search</text><text x="1210" y="604" class="small">Top-k semantic similarity search</text><text x="1210" y="627" class="small">Metadata filters: candidate + section</text>
+  <rect x="1180" y="720" width="330" height="110" class="box model"/><text x="1265" y="762" class="text">Groq Llama 3.3 70B</text><text x="1210" y="789" class="small">Grounded prompt: context-only answer</text>
+
+  <path d="M230 275 H350" class="arrow"/><path d="M480 320 V375" class="arrow"/><path d="M480 485 V540" class="arrow"/>
+  <path d="M610 597 H750" class="arrow"/><text x="649" y="579" class="label">structured intent</text>
+  <path d="M610 597 H680 V267 H1180" class="arrow"/><text x="790" y="250" class="label">semantic intent</text>
+  <path d="M892 385 V470" class="arrow"/><path d="M892 600 V690" class="arrow"/>
+  <path d="M1345 320 V375" class="arrow"/><path d="M1345 480 V535" class="arrow"/><path d="M1345 660 V720" class="arrow"/>
+  <path d="M750 740 H690 V775 H610" class="arrow"/><path d="M1180 775 H610" class="arrow"/>
+  <path d="M350 775 H285 V637 H230" class="arrow"/><path d="M230 637 V330" class="arrow dashed"/><text x="88" y="745" class="label">JSON response: answer, source(s), follow-ups</text>
+</svg>

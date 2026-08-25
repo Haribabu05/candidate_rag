@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940">
+  <style>
+    .title { font: 700 30px Arial, sans-serif; fill: #13233a; }
+    .subtitle { font: 16px Arial, sans-serif; fill: #52657d; }
+    .group { fill: #f5f8fc; stroke: #9bb4d0; stroke-width: 2; rx: 16; }
+    .groupTitle { font: 700 18px Arial, sans-serif; fill: #264b75; }
+    .box { stroke-width: 2; rx: 12; }
+    .source { fill: #e8f2ff; stroke: #4f86c6; }
+    .process { fill: #eefbf3; stroke: #4ea96b; }
+    .store { fill: #fff8e7; stroke: #d49a28; }
+    .model { fill: #f3edff; stroke: #855ccc; }
+    .text { font: 600 17px Arial, sans-serif; fill: #172b43; }
+    .small { font: 14px Arial, sans-serif; fill: #41546c; }
+    .arrow { stroke: #55708d; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .note { fill: #ffffff; stroke: #c9d7e6; stroke-width: 1.5; rx: 9; }
+  </style>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#55708d"/></marker></defs>
+
+  <text x="70" y="58" class="title">Candidate Compliance Agent — Data Processing Architecture</text>
+  <text x="70" y="87" class="subtitle">Offline ingestion pipeline: scanned affidavits → OCR → structured records + semantic vector index</text>
+
+  <rect x="50" y="125" width="270" height="690" class="group"/>
+  <text x="75" y="160" class="groupTitle">1. Source documents</text>
+  <rect x="80" y="205" width="210" height="100" class="box source"/>
+  <text x="105" y="247" class="text">Candidate affidavits</text>
+  <text x="105" y="274" class="small">Tamil + English scanned PDFs</text>
+  <rect x="80" y="385" width="210" height="120" class="note"/>
+  <text x="102" y="424" class="text">Dataset scope</text>
+  <text x="102" y="452" class="small">35 Kolathur candidates</text>
+  <text x="102" y="476" class="small">~619 affidavit pages</text>
+
+  <rect x="370" y="125" width="325" height="690" class="group"/>
+  <text x="395" y="160" class="groupTitle">2. Extract and normalize</text>
+  <rect x="405" y="205" width="255" height="110" class="box process"/>
+  <text x="440" y="247" class="text">PDF → page images</text>
+  <text x="440" y="274" class="small">300 DPI rendering</text>
+  <rect x="405" y="375" width="255" height="125" class="box process"/>
+  <text x="458" y="417" class="text">Tesseract OCR</text>
+  <text x="435" y="444" class="small">eng+tam, PSM 6</text>
+  <text x="435" y="467" class="small">Text + page metadata</text>
+  <rect x="405" y="560" width="255" height="110" class="box store"/>
+  <text x="446" y="602" class="text">Extracted pages JSON</text>
+  <text x="433" y="629" class="small">candidate, party, page, text</text>
+
+  <rect x="745" y="125" width="365" height="690" class="group"/>
+  <text x="770" y="160" class="groupTitle">3. Build retrieval-ready data</text>
+  <rect x="785" y="205" width="285" height="130" class="box process"/>
+  <text x="839" y="245" class="text">Affidavit parser</text>
+  <text x="815" y="273" class="small">Extracts assets, income, education,</text>
+  <text x="815" y="296" class="small">criminal counts, party and identity</text>
+  <rect x="785" y="390" width="285" height="110" class="box store"/>
+  <text x="822" y="432" class="text">Candidate master JSON</text>
+  <text x="826" y="459" class="small">Structured deterministic data</text>
+  <rect x="785" y="560" width="285" height="145" class="box process"/>
+  <text x="840" y="600" class="text">Semantic document builder</text>
+  <text x="815" y="628" class="small">Topic-aware sections per candidate:</text>
+  <text x="815" y="651" class="small">identity, education, criminal, income, assets</text>
+  <text x="815" y="676" class="small">(raw evidence included where needed)</text>
+
+  <rect x="1160" y="125" width="385" height="690" class="group"/>
+  <text x="1185" y="160" class="groupTitle">4. Embed and persist</text>
+  <rect x="1205" y="205" width="295" height="125" class="box model"/>
+  <text x="1250" y="247" class="text">Sentence Transformers</text>
+  <text x="1230" y="274" class="small">paraphrase-multilingual-</text>
+  <text x="1230" y="297" class="small">MiniLM-L12-v2</text>
+  <rect x="1205" y="400" width="295" height="160" class="box store"/>
+  <text x="1290" y="442" class="text">ChromaDB</text>
+  <text x="1230" y="470" class="small">Collection: affidavits</text>
+  <text x="1230" y="494" class="small">Vector + document + metadata</text>
+  <text x="1230" y="518" class="small">candidate · party · constituency · section</text>
+  <rect x="1205" y="630" width="295" height="90" class="note"/>
+  <text x="1230" y="668" class="text">Output: semantic index</text>
+  <text x="1230" y="694" class="small">Ready for query-time RAG</text>
+
+  <path d="M290 255 H405" class="arrow"/><path d="M532 315 V375" class="arrow"/><path d="M532 500 V560" class="arrow"/>
+  <path d="M660 615 H785" class="arrow"/><path d="M927 335 V390" class="arrow"/><path d="M927 500 V560" class="arrow"/>
+  <path d="M1070 630 H1205" class="arrow"/><path d="M1352 330 V400" class="arrow"/>
+</svg>
